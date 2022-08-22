@@ -23,6 +23,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import { useTranslation } from "next-i18next";
 
 import { menuService } from "../../services/menuService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -34,95 +35,160 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import UpdateIcon from "@mui/icons-material/Update";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 50 },
-  {
-    field: "name",
-    headerName: "Name",
-    width: 150,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "label",
-    headerName: "Label",
-    width: 200,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "is_parent",
-    headerName: "Parent Menu",
-    width: 150,
-    type: "boolean",
-  },
-  {
-    field: "parent",
-    headerName: "Parent",
-    width: 150,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-    renderCell: (v) => {
-      return v.value ? v.value : "-";
-    },
-  },
-  {
-    field: "icon",
-    headerName: "Icon",
-    width: 100,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-    renderCell: (v) => {
-      return <Icon>{v.row.icon}</Icon>;
-    },
-    align: "center",
-    filterable: false,
-    sortable: false,
-  },
-  {
-    field: "url",
-    headerName: "URL",
-    flex: 1,
-    minWidth: 200,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-    renderCell: (v) => {
-      return v.value ? <Chip label={v.value} variant="outlined" /> : "-";
-    },
-  },
-];
-
 export const MenuPage = () => {
+  const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const gridLocale = {
+    noRowsLabel: t("noRowsLabel", { ns: "grid" }),
+    noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
+    errorOverlayDefaultLabel: t("errorOverlayDefaultLabel", { ns: "grid" }),
+    columnsPanelTextFieldLabel: t("columnsPanelTextFieldLabel", { ns: "grid" }),
+    columnsPanelTextFieldPlaceholder: t("columnsPanelTextFieldPlaceholder", {
+      ns: "grid",
+    }),
+    columnsPanelDragIconLabel: t("columnsPanelDragIconLabel", { ns: "grid" }),
+    columnsPanelShowAllButton: t("columnsPanelShowAllButton", { ns: "grid" }),
+    columnsPanelHideAllButton: t("columnsPanelHideAllButton", { ns: "grid" }),
+    filterPanelAddFilter: t("filterPanelAddFilter", { ns: "grid" }),
+    filterPanelDeleteIconLabel: t("filterPanelDeleteIconLabel", { ns: "grid" }),
+    filterPanelLinkOperator: t("filterPanelLinkOperator", { ns: "grid" }),
+    filterPanelOperators: t("filterPanelOperators", { ns: "grid" }),
+    filterPanelOperatorAnd: t("filterPanelOperatorAnd", { ns: "grid" }),
+    filterPanelOperatorOr: t("filterPanelOperatorOr", { ns: "grid" }),
+    filterPanelColumns: t("filterPanelColumns", { ns: "grid" }),
+    filterPanelInputLabel: t("filterPanelInputLabel", { ns: "grid" }),
+    filterPanelInputPlaceholder: t("filterPanelInputPlaceholder", {
+      ns: "grid",
+    }),
+    filterOperatorContains: t("filterOperatorContains", { ns: "grid" }),
+    filterOperatorEquals: t("filterOperatorEquals", { ns: "grid" }),
+    filterOperatorStartsWith: t("filterOperatorStartsWith", { ns: "grid" }),
+    filterOperatorEndsWith: t("filterOperatorEndsWith", { ns: "grid" }),
+    filterOperatorIs: t("filterOperatorIs", { ns: "grid" }),
+    filterOperatorNot: t("filterOperatorNot", { ns: "grid" }),
+    filterOperatorAfter: t("filterOperatorAfter", { ns: "grid" }),
+    filterOperatorOnOrAfter: t("filterOperatorOnOrAfter", { ns: "grid" }),
+    filterOperatorBefore: t("filterOperatorBefore", { ns: "grid" }),
+    filterOperatorOnOrBefore: t("filterOperatorOnOrBefore", { ns: "grid" }),
+    filterOperatorIsEmpty: t("filterOperatorIsEmpty", { ns: "grid" }),
+    filterOperatorIsNotEmpty: t("filterOperatorIsNotEmpty", { ns: "grid" }),
+    filterOperatorIsAnyOf: t("filterOperatorIsAnyOf", { ns: "grid" }),
+    filterValueAny: t("filterValueAny", { ns: "grid" }),
+    filterValueTrue: t("filterValueTrue", { ns: "grid" }),
+    filterValueFalse: t("filterValueFalse", { ns: "grid" }),
+    columnMenuLabel: t("columnMenuLabel", { ns: "grid" }),
+    columnMenuShowColumns: t("columnMenuShowColumns", { ns: "grid" }),
+    columnMenuFilter: t("columnMenuFilter", { ns: "grid" }),
+    columnMenuHideColumn: t("columnMenuHideColumn", { ns: "grid" }),
+    columnMenuUnsort: t("columnMenuUnsort", { ns: "grid" }),
+    columnMenuSortAsc: t("columnMenuSortAsc", { ns: "grid" }),
+    columnMenuSortDesc: t("columnMenuSortDesc", { ns: "grid" }),
+    columnHeaderFiltersTooltipActive: (count) =>
+      count !== 1
+        ? `${count} ${t("sortPlural", { ns: "grid" })}`
+        : `${count} ${t("sortSingular", { ns: "grid" })}`,
+    columnHeaderFiltersLabel: t("columnHeaderFiltersLabel", { ns: "grid" }),
+    columnHeaderSortIconLabel: t("columnHeaderSortIconLabel", { ns: "grid" }),
+  };
+
+  const columns = [
+    {
+      field: "id",
+      headerName: t("id", { ns: "menu" }),
+      width: 75,
+      type: "number",
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "name",
+      headerName: t("name", { ns: "menu" }),
+      width: 150,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "label",
+      headerName: t("label", { ns: "menu" }),
+      width: 200,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "is_parent",
+      headerName: t("parent_menu", { ns: "menu" }),
+      width: 150,
+      type: "boolean",
+    },
+    {
+      field: "parent",
+      headerName: t("parent", { ns: "menu" }),
+      width: 150,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+      renderCell: (v) => {
+        return v.value ? v.value : "-";
+      },
+    },
+    {
+      field: "icon",
+      headerName: t("icon", { ns: "menu" }),
+      width: 100,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+      renderCell: (v) => {
+        return <Icon>{v.row.icon}</Icon>;
+      },
+      align: "center",
+      filterable: false,
+      sortable: false,
+    },
+    {
+      field: "url",
+      headerName: t("url", { ns: "menu" }),
+      flex: 1,
+      minWidth: 200,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+      renderCell: (v) => {
+        return v.value ? <Chip label={v.value} variant="outlined" /> : "-";
+      },
+    },
+  ];
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -170,7 +236,7 @@ export const MenuPage = () => {
               size="small"
             >
               <AutorenewIcon sx={{ mr: ".5em" }} />
-              Refresh grid
+              {t("refresh_grid", { ns: "menu" })}
             </Button>
           )}
         </Grid>
@@ -202,7 +268,11 @@ export const MenuPage = () => {
     menuService.menuList(param).then((res) => {
       if (!res.status) {
         setPageState((old) => ({ ...old, isLoading: false }));
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         const arrParent = [];
         res.data.data.map((menu) => {
@@ -273,13 +343,22 @@ export const MenuPage = () => {
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
+          <ListItemText>
+            {t("button.edit").charAt(0).toUpperCase() +
+              t("button.edit").slice(1)}
+          </ListItemText>
         </MenuItem>
         <MenuItem onClick={deleteRestoreRow}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Delete/Restore</ListItemText>
+          <ListItemText>
+            {t("button.delete").charAt(0).toUpperCase() +
+              t("button.delete").slice(1)}
+            /
+            {t("button.restore").charAt(0).toUpperCase() +
+              t("button.restore").slice(1)}
+          </ListItemText>
         </MenuItem>
       </Menu>
     );
@@ -308,7 +387,7 @@ export const MenuPage = () => {
           state.setName(row.name);
           state.setLabel(row.label);
           state.setIcon(row.icon);
-          state.setIsParent(row.is_parent);
+          state.setIsParent(row.is_parent ? true : false);
           row.parent ? state.setParent(row.parent) : null;
           row.url ? state.setUrl(row.url) : null;
           state.setRowEdit(row);
@@ -316,16 +395,16 @@ export const MenuPage = () => {
         myDialog(
           true,
           "form",
-          "Edit Menu",
+          t("edit_menu", { ns: "menu" }),
           <MenuDialog type="edit" />,
           "sm",
           editMenu,
-          "Edit",
+          t("button.update"),
           () => {
             closeDialog();
             clearDialogState();
           },
-          "Cancel"
+          t("button.cancel")
         );
       }
     });
@@ -340,15 +419,25 @@ export const MenuPage = () => {
         myDialog(
           true,
           "confirm",
-          `${mode.charAt(0).toUpperCase() + mode.slice(1)} menu`,
-          `Are you sure you want to ${mode} menu ${row.name}?`,
+          `${
+            mode === "delete"
+              ? t("button.delete").charAt(0).toUpperCase() +
+                t("button.delete").slice(1)
+              : t("button.restore").charAt(0).toUpperCase() +
+                t("button.restore").slice(1)
+          } ${t("menu", { ns: "menu" })}`,
+          `${t("delete_restore_message", {
+            action:
+              mode === "delete" ? t("button.delete") : t("button.restore"),
+            target: row.name,
+          })}`,
           "xs",
           () => {
             mode === "delete" ? deleteMenu(row) : restoreMenu(row);
           },
-          `${mode.charAt(0).toUpperCase() + mode.slice(1)}`,
+          `${mode === "delete" ? t("button.delete") : t("button.restore")}`,
           closeDialog,
-          "Cancel"
+          t("button.cancel")
         );
         handleClose();
       }
@@ -366,7 +455,7 @@ export const MenuPage = () => {
       state.setUrl("");
       state.setIsParent(false);
       state.setIcon("");
-      state.setParent("");
+      state.setParent(null);
       state.setRowEdit(null);
     });
   };
@@ -386,12 +475,16 @@ export const MenuPage = () => {
     menuService.addMenu(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Menu ${param.name} has been added`,
+          t("success"),
+          t("add_success", { ns: "menu", subject: param.name }),
           "success",
           "bottom",
           "right"
@@ -419,12 +512,19 @@ export const MenuPage = () => {
     menuService.updateMenu(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Menu ${useMenuDialogStore.getState().name} has been edited`,
+          t("success"),
+          t("edit_success", {
+            ns: "menu",
+            subject: useMenuDialogStore.getState().name,
+          }),
           "success",
           "bottom",
           "right"
@@ -443,12 +543,16 @@ export const MenuPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     menuService.deleteMenu(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Menu ${row.name} has been deleted`,
+          t("success"),
+          t("delete_success", { ns: "menu", subject: row.name }),
           "success",
           "bottom",
           "right"
@@ -467,12 +571,16 @@ export const MenuPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     menuService.restoreMenu(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Menu ${row.name} has been restored`,
+          t("success"),
+          t("restore_success", { ns: "menu", subject: row.name }),
           "success",
           "bottom",
           "right"
@@ -512,11 +620,11 @@ export const MenuPage = () => {
             size="small"
             fullWidth={matchesSm ? true : false}
           >
-            <InputLabel id="select-rpp">Rows per page</InputLabel>
+            <InputLabel id="select-rpp">{t("rpp", { ns: "menu" })}</InputLabel>
             <Select
               labelId="select-rpp"
               value={pageState.pageSize}
-              label="Rows per page"
+              label={t("rpp", { ns: "menu" })}
               onChange={(e) =>
                 setPageState((old) => ({ ...old, pageSize: e.target.value }))
               }
@@ -533,23 +641,23 @@ export const MenuPage = () => {
               myDialog(
                 true,
                 "form",
-                "Add Menu",
+                t("add_menu", { ns: "menu" }),
                 <MenuDialog type="add" />,
                 "sm",
                 addMenu,
-                "Add",
+                t("button.add"),
                 () => {
                   closeDialog();
                   clearDialogState();
                 },
-                "Cancel"
+                t("button.cancel")
               )
             }
             variant="contained"
             fullWidth={matchesSm ? true : false}
           >
             <AddIcon />
-            Add Menu
+            {t("add_menu", { ns: "menu" })}
           </Button>
         </Grid>
       </Grid>
@@ -557,6 +665,7 @@ export const MenuPage = () => {
         <div style={{ display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
             <DataGrid
+              localeText={gridLocale}
               sx={{
                 height: "100%",
                 width: "100%",

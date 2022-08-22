@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTranslation } from "next-i18next";
 
 export const useRoleDialogStore = create((set) => ({
   name: "",
@@ -22,6 +23,7 @@ export const useRoleDialogStore = create((set) => ({
 }));
 
 export const RoleDialog = ({ type }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -49,7 +51,7 @@ export const RoleDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0 }}
             id="name"
-            label="Name"
+            label={t("name", { ns: "role" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -64,7 +66,7 @@ export const RoleDialog = ({ type }) => {
             rows={4}
             sx={{ mt: 0, mb: 0, flex: 1 }}
             id="desc"
-            label="Description"
+            label={t("description", { ns: "role" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -75,6 +77,10 @@ export const RoleDialog = ({ type }) => {
         </Grid>
         <Grid item xs={12} sm={12} md={12}>
           <Autocomplete
+            clearText={t("clear")}
+            closeText={t("close")}
+            openText={t("open")}
+            noOptionsText={t("no_options")}
             value={privs}
             multiple
             id="select-priv"
@@ -85,8 +91,8 @@ export const RoleDialog = ({ type }) => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Privileges"
-                placeholder="Type something..."
+                label={t("privileges", { ns: "role" })}
+                placeholder={t("type_something")}
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (

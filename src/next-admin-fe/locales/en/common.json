@@ -1,0 +1,50 @@
+{
+    "error": {
+        "error": "Error",
+        "warning": "Warning",
+        "unexpected": {
+            "header": "Unexpected error",
+            "content": "No response from server"
+        },
+        "422": "Unprocessable content",
+        "401": "Unauthorized"
+    },
+    "button": {
+        "ok": "okay",
+        "cancel": "cancel",
+        "add": "add",
+        "update": "update",
+        "edit": "edit",
+        "delete": "delete",
+        "restore": "restore",
+        "reset": "reset",
+        "save": "save",
+        "no": "no",
+        "yes": "yes"
+    },
+    "success": "Success",
+    "warning_user_delete_message": "User {{target}} is logged in. You cannot delete this user.",
+    "delete_restore_message": "Are you sure you want to {{action}} {{target}}?",
+    "are_you_sure": "Are you sure?",
+    "click_to_show_menu": "Click to show menu",
+    "session_expired_login": "Your session is expired. Redirecting to login page.",
+    "something_wrong_login": "Something wrong happened. Redirecting to login page.",
+    "logging_out": "Ending your session",
+    "please_wait": "Please wait",
+    "username": "Username",
+    "password": "Password",
+    "name": "Name",
+    "administration": "Administration",
+    "user": "User",
+    "menu": "Menu",
+    "group": "Group",
+    "role": "Role",
+    "privilege": "Privilege",
+    "configuration": "Configuration",
+    "logout": "Logout",
+    "no_options": "No options",
+    "open": "Open",
+    "close": "Close",
+    "clear": "Clear",
+    "type_something": "Type something..."
+}

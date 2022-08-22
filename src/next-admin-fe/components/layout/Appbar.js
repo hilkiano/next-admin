@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTranslation } from "next-i18next";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -27,14 +28,13 @@ import { MyDialog, myDialog, useMyDialogStore } from "../reusable/MyDialog";
 import { useAuthStore } from "../store/AuthStore";
 import { useMyAvatarStore, MyAvatar } from "../reusable/MyAvatar";
 
-export default function Appbar({ title, handleDrawerToggle }) {
+export default function Appbar({ title, handleDrawerToggle, user }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();
-  const user = useAuthStore((state) => state.user);
-  const setUser = useAuthStore((state) => state.setUser);
-  const setName = useMyAvatarStore((state) => state.setName);
-  const [loading, setLoading] = useState(false);
+  const { name, setName, setImgUrl } = useMyAvatarStore();
 
+  const [loading, setLoading] = useState(false);
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorElUser, setAnchorElUser] = useState(null);
 
@@ -47,23 +47,18 @@ export default function Appbar({ title, handleDrawerToggle }) {
   };
 
   const logoutHandler = () => {
-    myBackdrop(true, "Logging out", "h5", "dark", true, 30, true);
+    myBackdrop(true, t("logging_out"), "h5", "dark", true, 30, true);
     userService.logout().then((res) => {
       if (res.status) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
         router.reload(window.location.pathname);
       } else {
         if (res.data.status === 401) {
           useMyBackdropStore.setState((state) => {
-            state.message =
-              "Something wrong happened. Redirecting to login page.";
+            state.message = t("something_wrong_login");
             state.type = "dark";
             state.transparency = false;
           });
           setTimeout(() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
             router.reload(window.location.pathname);
           }, 4000);
         }
@@ -72,40 +67,10 @@ export default function Appbar({ title, handleDrawerToggle }) {
   };
 
   useEffect(() => {
-    setLoading(true);
-    userService.me().then((res) => {
-      if (!res.status) {
-        if (!res.data) {
-          useMyBackdropStore.setState((state) => {
-            state.open = true;
-            state.textVariant = "h5";
-            state.message = "Please wait";
-            state.type = "light";
-            state.indicatorSize = 30;
-            state.transparency = false;
-          });
-        } else {
-          useMyBackdropStore.setState((state) => {
-            state.open = true;
-            state.textVariant = "h5";
-            state.message =
-              "Your session is expired. Redirecting to login page.";
-            state.type = "dark";
-            state.indicatorSize = 30;
-            state.transparency = false;
-          });
-        }
-        setTimeout(() => {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          router.reload(window.location.pathname);
-        }, 4000);
-      } else {
-        setLoading(false);
-        setUser(res.data.data.user);
-        setName(res.data.data.user.name);
-      }
-    });
+    setName(user.user.name);
+    if (user.user.avatar_url) {
+      setImgUrl(user.user.avatar_url);
+    }
   }, []);
 
   return (
@@ -116,7 +81,7 @@ export default function Appbar({ title, handleDrawerToggle }) {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="fixed">
           <Toolbar>
-            <Box sx={{ flexGrow: 1, display: { md: "flex" } }}>
+            <Box sx={{ flexGrow: matchesSm ? 1 : 0, display: { md: "flex" } }}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -127,8 +92,29 @@ export default function Appbar({ title, handleDrawerToggle }) {
                 <MenuIcon />
               </IconButton>
             </Box>
+            {matchesSm ? (
+              <></>
+            ) : (
+              <Box
+                sx={{
+                  ml: "19em",
+                  width: "11rem",
+                  flexGrow: 1,
+                  display: { md: "flex" },
+                }}
+              >
+                <Typography
+                  noWrap
+                  variant="h6"
+                  component="div"
+                  sx={{ flexGrow: 1 }}
+                >
+                  {title}
+                </Typography>
+              </Box>
+            )}
             <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Click to show menu">
+              <Tooltip title={t("click_to_show_menu")}>
                 {loading ? (
                   <Skeleton
                     sx={{ width: "200px" }}
@@ -139,7 +125,7 @@ export default function Appbar({ title, handleDrawerToggle }) {
                   <Chip
                     sx={{ fontSize: "0.9rem", height: "35px" }}
                     avatar={<MyAvatar />}
-                    label={user.name}
+                    label={name}
                     variant="filled"
                     onClick={handleMenu}
                     color="primary"
@@ -172,21 +158,22 @@ export default function Appbar({ title, handleDrawerToggle }) {
                     myDialog(
                       true,
                       "confirm",
-                      "Logout",
-                      `Are you sure?`,
+                      t("logout"),
+                      t("are_you_sure"),
                       "xs",
                       logoutHandler,
-                      "Yes",
+                      t("button.yes"),
                       () => {
                         useMyDialogStore.setState((state) =>
                           state.handleClose()
                         );
+                        handleCloseMenu();
                       },
-                      "No"
+                      t("button.no")
                     )
                   }
                 >
-                  <Typography textAlign="center">Logout</Typography>
+                  <Typography textAlign="center">{t("logout")}</Typography>
                 </MenuItem>
               </Menu>
             </Box>

@@ -1,0 +1,17 @@
+{
+    "user": "Pengguna",
+    "rpp": "Baris per halaman",
+    "refresh_grid": "Muat Ulang",
+    "add_user": "Tambah Pengguna",
+    "id": "ID",
+    "avatar": "Avatar",
+    "username": "Nama Pengguna",
+    "name": "Nama",
+    "email": "Email",
+    "group": "Grup",
+    "edit_user": "Perbarui Pengguna",
+    "add_success": "Pengguna {{subject}} sudah ditambahkan",
+    "edit_success": "Pengguna {{subject}} sudah diperbarui",
+    "delete_success": "Pengguna {{subject}} sudah dihapus",
+    "restore_success": "Pengguna {{subject}} sudah dipulihkan"
+}

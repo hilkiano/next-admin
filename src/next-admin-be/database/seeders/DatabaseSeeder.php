@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             PrivilegeSeeder::class,
             GroupRoleSeeder::class,
             GroupUserSeeder::class,
-            RolePrivilegeSeeder::class
+            RolePrivilegeSeeder::class,
+            ConfigSeeder::class,
         ]);
     }
 }

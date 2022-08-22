@@ -1,104 +1,105 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const menuService = {
   menuList,
   addMenu,
   updateMenu,
   deleteMenu,
-  restoreMenu
+  restoreMenu,
 };
 
 async function menuList(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/list`, { params: param })
+    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/list`, {
+      params: param,
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function addMenu(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/add`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/add`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function updateMenu(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/update`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/update`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function deleteMenu(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/delete`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/delete`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function restoreMenu(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/restore`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/menu/restore`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }

@@ -1,0 +1,50 @@
+{
+    "error": {
+        "error": "Kesalahan",
+        "warning": "Peringatan",
+        "unexpected": {
+            "header": "Kesalahan tidak terduga",
+            "content": "Tidak ada balasan dari server"
+        },
+        "422": "Konten gagal diproses",
+        "401": "Akses tidak sah"
+    },
+    "button": {
+        "ok": "oke",
+        "cancel": "batal",
+        "add": "tambah",
+        "update": "perbarui",
+        "edit": "ubah",
+        "delete": "hapus",
+        "restore": "pulihkan",
+        "reset": "setel ulang",
+        "save": "simpan",
+        "no": "tidak",
+        "yes": "ya"
+    },
+    "success": "Berhasil",
+    "warning_user_delete_message": "Pengguna {{target}} sedang masuk. Anda tidak dapat menghapusnya.",
+    "delete_restore_message": "Anda yakin ingin {{action}} {{target}}?",
+    "are_you_sure": "Anda yakin?",
+    "click_to_show_menu": "Klik untuk menampilkan menu",
+    "session_expired_login": "Sesi anda telah kadaluarsa. Mengalihkan ke halaman login.",
+    "something_wrong_login": "Terjadi kesalahan. Mengalihkan ke halaman login.",
+    "logging_out": "Mengakhiri sesi",
+    "please_wait": "Harap tunggu",
+    "username": "Nama pengguna",
+    "password": "Kata sandi",
+    "name": "Nama",
+    "administration": "Administrasi",
+    "user": "Pengguna",
+    "menu": "Menu",
+    "group": "Grup",
+    "role": "Peran",
+    "privilege": "Hak Akses",
+    "configuration": "Konfigurasi",
+    "logout": "Keluar",
+    "no_options": "Tidak ada opsi",
+    "open": "Buka",
+    "close": "Tutup",
+    "clear": "Hapus",
+    "type_something": "Ketik sesuatu..."
+}

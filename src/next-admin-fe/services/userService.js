@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const userService = {
   login,
@@ -8,158 +8,188 @@ export const userService = {
   updateUser,
   addUser,
   deleteUser,
-  restoreUser
+  restoreUser,
+  updateInfo,
 };
 
 async function login(username, password) {
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/login`, {
-      username: username,
-      password: password,
-    })
+    .post(
+      `${process.env.NEXT_PUBLIC_BE_HOST}/api/login`,
+      {
+        username: username,
+        password: password,
+      },
+      {
+        withCredentials: true,
+      }
+    )
     .then((res) => {
       return {
-        "status": true,
-        "data": res
+        status: true,
+        data: res,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function logout() {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/logout`)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/logout`, null, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res
+        status: true,
+        data: res,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function me() {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/me`)
+    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/me`, null, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res
+        status: true,
+        data: res,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function userList(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/list`, { params: param })
+    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/list`, {
+      params: param,
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function updateUser(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/update`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/update`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function addUser(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/add`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/add`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function deleteUser(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/delete`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/delete`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function restoreUser(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/restore`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/restore`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
+      };
+    });
+}
+
+async function updateInfo(param) {
+  return await axios
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/user/updateInfo`, param, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    })
+    .then((res) => {
+      return {
+        status: true,
+        data: res.data,
+      };
+    })
+    .catch((err) => {
+      return {
+        status: false,
+        data: err.response,
       };
     });
 }

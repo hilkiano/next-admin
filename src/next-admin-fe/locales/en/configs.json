@@ -1,0 +1,10 @@
+{
+    "administration": "Administration",
+    "configs": "Configurations",
+    "language": "Language",
+    "language_desc": "Set the default language for application.",
+    "english_main": "English",
+    "english_sec": "English",
+    "indo_main": "Indonesia",
+    "indo_sec": "Indonesian"
+}

@@ -1,0 +1,16 @@
+{
+    "group": "Group",
+    "rpp": "Rows per page",
+    "refresh_grid": "Refresh Grid",
+    "add_group": "Add Group",
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "roles": "Roles",
+    "users": "Users",
+    "edit_group": "Edit Group",
+    "add_success": "Group {{subject}} has been added",
+    "edit_success": "Group {{subject}} has been edited",
+    "delete_success": "Group {{subject}} has been deleted",
+    "restore_success": "Group {{subject}} has been restored"
+}

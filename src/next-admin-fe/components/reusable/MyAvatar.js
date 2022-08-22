@@ -5,6 +5,8 @@ import Avatar from "@mui/material/Avatar";
 export const useMyAvatarStore = create((set) => ({
   name: "",
   setName: (newName) => set({ name: newName }),
+  imgUrl: null,
+  setImgUrl: (newUrl) => set({ imgUrl: newUrl }),
 }));
 
 const stringToColor = (string) => {
@@ -28,7 +30,7 @@ const stringToColor = (string) => {
 const getInitial = (name) => {
   const rgx = new RegExp(/(\p{L}{1})\p{L}+/, "gu");
 
-  const initials = [...name.matchAll(rgx)] || [];
+  let initials = [...name.matchAll(rgx)] || [];
 
   return (initials = (
     (initials.shift()?.[1] || "") + (initials.pop()?.[1] || "")
@@ -48,7 +50,24 @@ const stringAvatar = (name) => {
   };
 };
 
+const imgAvatar = (name, url) => {
+  return {
+    sx: {
+      left: "5px",
+      width: "25px",
+      height: "25px",
+    },
+    src: `${process.env.NEXT_PUBLIC_BE_HOST}/${url}`,
+    alt: name,
+  };
+};
+
 export const MyAvatar = () => {
-  const { name } = useMyAvatarStore();
-  return <Avatar {...stringAvatar(name)} />;
+  const { name, imgUrl } = useMyAvatarStore();
+
+  if (imgUrl) {
+    return <Avatar {...imgAvatar(name, imgUrl)} />;
+  } else {
+    return <Avatar {...stringAvatar(name)} />;
+  }
 };

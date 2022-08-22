@@ -165,6 +165,17 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Name',
+        'username' => 'Username',
+        'email' => 'Email',
+        'password' => 'Password',
+        'description' => 'Description',
+        'privileges' => 'Privileges',
+        'roles' => 'Roles',
+        'users' => 'Users',
+        'label' => 'Label',
+        'icon' => 'Icon'
+    ],
 
 ];

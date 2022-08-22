@@ -1,0 +1,9 @@
+{
+    "homepage": "Home Page",
+    "welcome": "Welcome",
+    "button": {
+        "info": "Update Your Information",
+        "choose_image": "Choose Image"
+    },
+    "updated_info": "Your info has been updated"
+}

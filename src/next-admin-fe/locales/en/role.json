@@ -1,0 +1,15 @@
+{
+    "role": "Role",
+    "rpp": "Rows per page",
+    "refresh_grid": "Refresh Grid",
+    "add_role": "Add Role",
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "privileges": "Privileges",
+    "edit_role": "Edit Role",
+    "add_success": "Role {{subject}} has been added",
+    "edit_success": "Role {{subject}} has been edited",
+    "delete_success": "Role {{subject}} has been deleted",
+    "restore_success": "Role {{subject}} has been restored"
+}
