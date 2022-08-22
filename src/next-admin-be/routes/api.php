@@ -5,7 +5,7 @@ use App\Http\Controllers\PrivilegeController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ConfigsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('configs', [ConfigsController::class, 'get'])->name('get.configs');
+
 Route::post('register', [UserController::class, 'register'])->name('register');
 Route::post('login', [UserController::class, 'login'])->name('login');
 
@@ -26,6 +28,7 @@ Route::group(['middleware' => 'auth.jwt'], function () use ($router) {
     $router->get('me', [UserController::class, 'me'])->name('me');
     $router->post('logout', [UserController::class, 'logout'])->name('logout');
     $router->group(['prefix' => 'user'], function () use ($router) {
+        $router->post('updateInfo', [UserController::class, 'updateInfo'])->name('user.updateInfo');
         $router->get('list', [UserController::class, 'list'])->name('user.list');
         $router->post('update', [UserController::class, 'update'])->name('user.update');
         $router->post('add', [UserController::class, 'register'])->name('user.add');
@@ -61,5 +64,8 @@ Route::group(['middleware' => 'auth.jwt'], function () use ($router) {
         $router->post('update', [PrivilegeController::class, 'update'])->name('privilege.update');
         $router->post('delete', [PrivilegeController::class, 'delete'])->name('privilege.delete');
         $router->post('restore', [PrivilegeController::class, 'restore'])->name('privilege.restore');
+    });
+    $router->group(['prefix' => 'configs'], function () use ($router) {
+        $router->post('update', [ConfigsController::class, 'update'])->name('configs.update');
     });
 });

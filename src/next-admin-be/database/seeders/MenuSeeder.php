@@ -71,6 +71,14 @@ class MenuSeeder extends Seeder
                 'parent'    => 'administrator',
                 'url'   => '/admin/privilege'
             ],
+            [
+                'name'  => 'configuration',
+                'label' => 'Configuration',
+                'is_parent' => false,
+                'icon'  => 'settings',
+                'parent'    => 'administrator',
+                'url'   => '/admin/configuration'
+            ],
         ]);
     }
 }

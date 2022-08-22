@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const groupService = {
   groupList,
@@ -6,119 +6,120 @@ export const groupService = {
   addGroup,
   updateGroup,
   deleteGroup,
-  restoreGroup
+  restoreGroup,
 };
 
 async function groupList(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/list`, { params: param })
+    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/list`, {
+      params: param,
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function dropdownList() {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/dropdown_list`)
+    .get(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/dropdown_list`, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function addGroup(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/add`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/add`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function updateGroup(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/update`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/update`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function deleteGroup(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/delete`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/delete`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }
 
 async function restoreGroup(param) {
-  const token = Buffer.from(localStorage.getItem('token'), 'base64').toString('utf8');
-  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   return await axios
-    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/restore`, param)
+    .post(`${process.env.NEXT_PUBLIC_BE_HOST}/api/group/restore`, param, {
+      withCredentials: true,
+    })
     .then((res) => {
       return {
-        "status": true,
-        "data": res.data
+        status: true,
+        data: res.data,
       };
     })
     .catch((err) => {
       return {
-        "status": false,
-        "data": err.response
+        status: false,
+        data: err.response,
       };
     });
 }

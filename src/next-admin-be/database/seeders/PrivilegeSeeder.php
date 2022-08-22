@@ -44,6 +44,10 @@ class PrivilegeSeeder extends Seeder
                 'name'          => 'PAGE_PRIVILEGE',
                 'description'   => 'Access for menu: PRIVILEGE'
             ],
+            [
+                'name'          => 'PAGE_CONFIGURATION',
+                'description'   => 'Access from menu: CONFIGURATION'
+            ]
         ]);
     }
 }

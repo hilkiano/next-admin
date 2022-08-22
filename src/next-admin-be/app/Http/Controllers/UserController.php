@@ -12,7 +12,11 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Str;
 use App\Http\Controllers\MenuController;
+use Illuminate\Support\Facades\Cookie;
 
 class UserController extends Controller
 {
@@ -62,15 +66,21 @@ class UserController extends Controller
     {
         if (auth()->user()) {
             $user = auth()->user();
-            list($groups, $roles, $privileges, $menus) = $this->getUserInfo($user);
+            if (Redis::get('userinfo_' . $user->id)) {
+                $userInfo = json_decode(Redis::get('userinfo_' . $user->id));
+            } else {
+                list($groups, $roles, $privileges, $menus) = $this->getUserInfo($user);
+                $userInfo = [
+                    'user'          => $user,
+                    'group'         => $groups,
+                    'roles'         => $this->my_array_unique($roles),
+                    'privileges'    => $this->my_array_unique($privileges),
+                    'menus'         => $menus
+                ];
+                Redis::set('userinfo_' . $user->id, json_encode($userInfo));
+            }
 
-            return response()->json([
-                'user'          => $user,
-                'group'         => $groups,
-                'roles'         => $this->my_array_unique($roles),
-                'privileges'    => $this->my_array_unique($privileges),
-                'menus'         => $menus
-            ], 200);
+            return response()->json($userInfo, 200);
         } else {
             return response()->json([
                 'success' => false,
@@ -151,6 +161,7 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
+        // Request validator
         $validator = Validator::make($request->all(), [
             'username'  => 'required',
             'password'  => 'required'
@@ -158,26 +169,29 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
+        // Check user
         $credentials = $request->only('username', 'password');
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Username or password is wrong.'
+                'message' => trans("message.username_password_mismatch")
             ], 401);
         }
-
-        list($groups, $roles, $privileges, $menus) = $this->getUserInfo(auth()->user());
-
+        // Delete user old cache
+        $user = auth()->user();
+        Redis::del('userinfo_' . $user->id);
+        // Get user info
+        list($groups, $roles, $privileges, $menus) = $this->getUserInfo($user);
+        $cookie = cookie('jwt', $token, config('jwt.ttl'), '/');
+        // Return user data with cookie
         return response()->json([
-            'success' => true,
-            'user'    => auth()->user(),
+            'success'       => true,
+            'user'          => $user,
             'group'         => $groups,
             'roles'         => $this->my_array_unique($roles),
             'privileges'    => $this->my_array_unique($privileges),
             'menus'         => $menus,
-            'token'   => $token
-        ], 200);
+        ], 200)->cookie($cookie);
     }
 
     /**
@@ -188,13 +202,17 @@ class UserController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = auth()->user();
+        Redis::del('userinfo_' . $user->id);
+        $cookie = Cookie::forget("jwt");
+
         $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
 
         if ($removeToken) {
             return response()->json([
                 'success' => true,
                 'message' => 'You are logged out.',
-            ]);
+            ])->cookie($cookie);
         }
     }
 
@@ -215,7 +233,7 @@ class UserController extends Controller
             $filterMode = ($request->has('filterMode')) ? $request->input('filterMode') : null;
             $filterValue = ($request->has('filterValue')) ? $request->input('filterValue') : null;
 
-            $user = User::withTrashed();
+            $user = User::withTrashed()->with('groups.group');
 
             if ($filterField && $filterMode && $filterValue) {
                 switch ($filterMode) {
@@ -331,6 +349,71 @@ class UserController extends Controller
             return response()->json([
                 'success'   => $user,
                 'message'   => ''
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'success'   => false,
+                'message'   => 'Something wrong happened. Try again later.'
+            ], 400);
+        }
+    }
+
+    /**
+     * Update user display name and picture
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function updateInfo(Request $request)
+    {
+        try {
+            $rules = [
+                "name"  => "required"
+            ];
+            if ($request->hasFile('img')) {
+                $rules['img'] = 'mimes:jpeg,jpg,png|max:3000';
+            }
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 422);
+            }
+
+            $id = $request->input('id');
+            $name = $request->input('name');
+
+            $user = User::find($id);
+            $user->name = $name;
+
+            if ($request->hasFile('img')) {
+                $files = Storage::disk("public")->allFiles();
+                foreach ($files as $file) {
+                    if (Str::startsWith($file, 'user_image/' . $user->username)) {
+                        Storage::disk('public')->delete($file);
+                    }
+                }
+                $image = $request->file('img');
+                $fileName = $user->username . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $path = $request->file('img')->storeAs(
+                    'user_image',
+                    $fileName,
+                    'public'
+                );
+
+                $user->avatar_url = 'storage/user_image/' . $fileName;
+            }
+
+            $user->save();
+
+            $cache = Redis::keys('*userinfo_' . $user->id);
+            if (count($cache) > 0) {
+                Redis::del('userinfo_' . $user->id);
+            }
+
+            return response()->json([
+                'success'   => true,
+                'user'      => $user,
+                'message'   => 'Your info updated'
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());

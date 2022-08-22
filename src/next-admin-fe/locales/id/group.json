@@ -1,0 +1,16 @@
+{
+    "group": "Grup",
+    "rpp": "Baris per halaman",
+    "refresh_grid": "Muat Ulang",
+    "add_group": "Tambah Grup",
+    "id": "ID",
+    "name": "Nama",
+    "description": "Deskripsi",
+    "roles": "Peran",
+    "users": "Pengguna",
+    "edit_group": "Perbarui Grup",
+    "add_success": "Grup {{subject}} sudah ditambahkan",
+    "edit_success": "Grup {{subject}} sudah diperbarui",
+    "delete_success": "Grup {{subject}} sudah dihapus",
+    "restore_success": "Grup {{subject}} sudah dipulihkan"
+}

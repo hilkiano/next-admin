@@ -1,3 +1,4 @@
+import React from "react";
 import create from "zustand";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -9,9 +10,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Autocomplete from "@mui/material/Autocomplete";
 import Icon from "@mui/material/Icon";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTranslation } from "next-i18next";
 
 import ClearIcon from "@mui/icons-material/Clear";
 
@@ -29,11 +32,12 @@ export const useMenuDialogStore = create((set) => ({
   rowEdit: null,
   setRowEdit: (row) => set({ rowEdit: row }),
   parents: [],
-  parent: "",
+  parent: null,
   setParent: (newParent) => set({ parent: newParent }),
 }));
 
 export const MenuDialog = ({ type }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -66,7 +70,7 @@ export const MenuDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0 }}
             id="name"
-            label="Name"
+            label={t("name", { ns: "menu" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -79,7 +83,7 @@ export const MenuDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0, flex: 1 }}
             id="label"
-            label="Label"
+            label={t("label", { ns: "menu" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -103,36 +107,39 @@ export const MenuDialog = ({ type }) => {
                 }}
               />
             }
-            label="Is Parent Menu"
+            label={t("parent_menu", { ns: "menu" })}
           />
         </Grid>
         {!isParent ? (
           <Grid item xs={12} sm={12} md={12}>
-            <FormControl required sx={{ minWidth: 150 }} fullWidth>
-              <InputLabel id="select-parent">Parent</InputLabel>
-              <Select
-                labelId="select-parent"
-                value={parent}
-                label="Parent"
-                onChange={(e) => setParent(e.target.value)}
-                startAdornment={
-                  <IconButton
-                    onClick={(e) => setParent("")}
-                    sx={{ display: parent ? "" : "none", mr: ".5em" }}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                }
-              >
-                {parents.map((parent) => {
-                  return (
-                    <MenuItem key={parent} value={parent}>
-                      {parent}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
+            <Autocomplete
+              clearText={t("clear")}
+              closeText={t("close")}
+              openText={t("open")}
+              noOptionsText={t("no_options")}
+              value={parent}
+              id="select-parent"
+              options={parents}
+              getOptionLabel={(option) => option}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t("parent", { ns: "menu" })}
+                  placeholder={t("type_something")}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <React.Fragment>
+                        {params.InputProps.endAdornment}
+                      </React.Fragment>
+                    ),
+                  }}
+                />
+              )}
+              onChange={(e, v) => setParent(v)}
+              isOptionEqualToValue={(o, v) => o === v}
+            />
           </Grid>
         ) : (
           <></>
@@ -141,7 +148,7 @@ export const MenuDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0 }}
             id="url"
-            label="URL"
+            label={t("url", { ns: "menu" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -155,14 +162,14 @@ export const MenuDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0 }}
             id="icon"
-            label="Icon"
+            label={t("icon", { ns: "menu" })}
             variant="outlined"
             margin="normal"
             fullWidth
             required
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
-            placeholder="type icon name based on Material Icon (ex. golf_course)"
+            placeholder={t("icon_placeholder", { ns: "menu" })}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="end">

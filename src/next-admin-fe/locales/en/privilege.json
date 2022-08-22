@@ -1,0 +1,14 @@
+{
+    "privilege": "Privilege",
+    "rpp": "Rows per page",
+    "refresh_grid": "Refresh Grid",
+    "add_privilege": "Add Privilege",
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "edit_privilege": "Edit Privilege",
+    "add_success": "Privilege {{subject}} has been added",
+    "edit_success": "Privilege {{subject}} has been edited",
+    "delete_success": "Privilege {{subject}} has been deleted",
+    "restore_success": "Privilege {{subject}} has been restored"
+}

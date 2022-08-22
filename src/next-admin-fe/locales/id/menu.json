@@ -1,0 +1,19 @@
+{
+    "menu": "Menu",
+    "rpp": "Baris per halaman",
+    "refresh_grid": "Muat Ulang",
+    "add_menu": "Tambah Menu",
+    "id": "ID",
+    "name": "Nama",
+    "label": "Label",
+    "parent_menu": "Induk Menu?",
+    "parent": "Induk",
+    "icon": "Ikon",
+    "url": "Tautan",
+    "edit_menu": "Perbarui Menu",
+    "add_success": "Menu {{subject}} sudah ditambahkan",
+    "edit_success": "Menu {{subject}} sudah diperbarui",
+    "delete_success": "Menu {{subject}} sudah dihapus",
+    "restore_success": "Menu {{subject}} sudah dipulihkan",
+    "icon_placeholder": "ketik nama ikon sesuai Material Icon (cth. golf_course)"
+}

@@ -34,134 +34,199 @@ import UpdateIcon from "@mui/icons-material/Update";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
-
-const columns = [
-  { field: "id", headerName: "ID", width: 50 },
-  {
-    field: "name",
-    headerName: "Name",
-    width: 200,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    width: 300,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "roles",
-    headerName: "Roles",
-    width: 300,
-    filterable: false,
-    sortable: false,
-    renderCell: (v) => {
-      if (v.row.roles.length > 0) {
-        return (
-          <Box
-            sx={{
-              pt: ".5em",
-              maxHeight: "inherit",
-              width: "100%",
-              whiteSpace: "initial",
-              lineHeight: "16px",
-            }}
-          >
-            {v.row.roles.slice(0, 3).map((role) => {
-              return (
-                <Chip
-                  key={role.role.id}
-                  icon={<LocalPoliceIcon />}
-                  sx={{ mr: ".5em", mb: ".5em" }}
-                  label={role.role.name}
-                  variant="outlined"
-                />
-              );
-            })}
-            {v.row.roles.length > 3 ? (
-              <Chip
-                sx={{ mr: ".5em", mb: ".5em" }}
-                label={`${v.row.roles.length - 3} +`}
-                variant="filled"
-                color="primary"
-              />
-            ) : (
-              <></>
-            )}
-          </Box>
-        );
-      } else {
-        return "-";
-      }
-    },
-  },
-  {
-    field: "users",
-    headerName: "Users",
-    minWidth: 400,
-    flex: 1,
-    filterable: false,
-    sortable: false,
-    renderCell: (v) => {
-      if (v.row.users.length > 0) {
-        return (
-          <Box
-            sx={{
-              pt: ".5em",
-              maxHeight: "inherit",
-              width: "100%",
-              whiteSpace: "initial",
-              lineHeight: "16px",
-            }}
-          >
-            {v.row.users.slice(0, 3).map((user) => {
-              return (
-                <Chip
-                  key={user.user.id}
-                  icon={<PersonIcon />}
-                  sx={{ mr: ".5em", mb: ".5em" }}
-                  label={user.user.name}
-                  variant="outlined"
-                />
-              );
-            })}
-            {v.row.users.length > 3 ? (
-              <Chip
-                sx={{ mr: ".5em", mb: ".5em" }}
-                label={`${v.row.users.length - 3} +`}
-                variant="filled"
-                color="primary"
-              />
-            ) : (
-              <></>
-            )}
-          </Box>
-        );
-      } else {
-        return "-";
-      }
-    },
-  },
-];
+import { useTranslation } from "next-i18next";
 
 export const GroupPage = () => {
+  const { t } = useTranslation();
+  const columns = [
+    {
+      field: "id",
+      headerName: t("id", { ns: "group" }),
+      width: 75,
+      type: "number",
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "name",
+      headerName: t("name", { ns: "group" }),
+      width: 200,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "description",
+      headerName: t("description", { ns: "group" }),
+      width: 300,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "roles",
+      headerName: t("roles", { ns: "group" }),
+      width: 300,
+      filterable: false,
+      sortable: false,
+      renderCell: (v) => {
+        if (v.row.roles.length > 0) {
+          return (
+            <Box
+              sx={{
+                pt: ".5em",
+                maxHeight: "inherit",
+                width: "100%",
+                whiteSpace: "initial",
+                lineHeight: "16px",
+              }}
+            >
+              {v.row.roles.slice(0, 3).map((role) => {
+                return (
+                  <Chip
+                    key={role.role.id}
+                    icon={<LocalPoliceIcon />}
+                    sx={{ mr: ".5em", mb: ".5em" }}
+                    label={role.role.name}
+                    variant="outlined"
+                  />
+                );
+              })}
+              {v.row.roles.length > 3 ? (
+                <Chip
+                  sx={{ mr: ".5em", mb: ".5em" }}
+                  label={`${v.row.roles.length - 3} +`}
+                  variant="filled"
+                  color="primary"
+                />
+              ) : (
+                <></>
+              )}
+            </Box>
+          );
+        } else {
+          return "-";
+        }
+      },
+    },
+    {
+      field: "users",
+      headerName: t("users", { ns: "group" }),
+      minWidth: 400,
+      flex: 1,
+      filterable: false,
+      sortable: false,
+      renderCell: (v) => {
+        if (v.row.users.length > 0) {
+          return (
+            <Box
+              sx={{
+                pt: ".5em",
+                maxHeight: "inherit",
+                width: "100%",
+                whiteSpace: "initial",
+                lineHeight: "16px",
+              }}
+            >
+              {v.row.users.slice(0, 3).map((user) => {
+                return (
+                  <Chip
+                    key={user.user.id}
+                    icon={<PersonIcon />}
+                    sx={{ mr: ".5em", mb: ".5em" }}
+                    label={user.user.name}
+                    variant="outlined"
+                  />
+                );
+              })}
+              {v.row.users.length > 3 ? (
+                <Chip
+                  sx={{ mr: ".5em", mb: ".5em" }}
+                  label={`${v.row.users.length - 3} +`}
+                  variant="filled"
+                  color="primary"
+                />
+              ) : (
+                <></>
+              )}
+            </Box>
+          );
+        } else {
+          return "-";
+        }
+      },
+    },
+  ];
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const gridLocale = {
+    noRowsLabel: t("noRowsLabel", { ns: "grid" }),
+    noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
+    errorOverlayDefaultLabel: t("errorOverlayDefaultLabel", { ns: "grid" }),
+    columnsPanelTextFieldLabel: t("columnsPanelTextFieldLabel", { ns: "grid" }),
+    columnsPanelTextFieldPlaceholder: t("columnsPanelTextFieldPlaceholder", {
+      ns: "grid",
+    }),
+    columnsPanelDragIconLabel: t("columnsPanelDragIconLabel", { ns: "grid" }),
+    columnsPanelShowAllButton: t("columnsPanelShowAllButton", { ns: "grid" }),
+    columnsPanelHideAllButton: t("columnsPanelHideAllButton", { ns: "grid" }),
+    filterPanelAddFilter: t("filterPanelAddFilter", { ns: "grid" }),
+    filterPanelDeleteIconLabel: t("filterPanelDeleteIconLabel", { ns: "grid" }),
+    filterPanelLinkOperator: t("filterPanelLinkOperator", { ns: "grid" }),
+    filterPanelOperators: t("filterPanelOperators", { ns: "grid" }),
+    filterPanelOperatorAnd: t("filterPanelOperatorAnd", { ns: "grid" }),
+    filterPanelOperatorOr: t("filterPanelOperatorOr", { ns: "grid" }),
+    filterPanelColumns: t("filterPanelColumns", { ns: "grid" }),
+    filterPanelInputLabel: t("filterPanelInputLabel", { ns: "grid" }),
+    filterPanelInputPlaceholder: t("filterPanelInputPlaceholder", {
+      ns: "grid",
+    }),
+    filterOperatorContains: t("filterOperatorContains", { ns: "grid" }),
+    filterOperatorEquals: t("filterOperatorEquals", { ns: "grid" }),
+    filterOperatorStartsWith: t("filterOperatorStartsWith", { ns: "grid" }),
+    filterOperatorEndsWith: t("filterOperatorEndsWith", { ns: "grid" }),
+    filterOperatorIs: t("filterOperatorIs", { ns: "grid" }),
+    filterOperatorNot: t("filterOperatorNot", { ns: "grid" }),
+    filterOperatorAfter: t("filterOperatorAfter", { ns: "grid" }),
+    filterOperatorOnOrAfter: t("filterOperatorOnOrAfter", { ns: "grid" }),
+    filterOperatorBefore: t("filterOperatorBefore", { ns: "grid" }),
+    filterOperatorOnOrBefore: t("filterOperatorOnOrBefore", { ns: "grid" }),
+    filterOperatorIsEmpty: t("filterOperatorIsEmpty", { ns: "grid" }),
+    filterOperatorIsNotEmpty: t("filterOperatorIsNotEmpty", { ns: "grid" }),
+    filterOperatorIsAnyOf: t("filterOperatorIsAnyOf", { ns: "grid" }),
+    filterValueAny: t("filterValueAny", { ns: "grid" }),
+    filterValueTrue: t("filterValueTrue", { ns: "grid" }),
+    filterValueFalse: t("filterValueFalse", { ns: "grid" }),
+    columnMenuLabel: t("columnMenuLabel", { ns: "grid" }),
+    columnMenuShowColumns: t("columnMenuShowColumns", { ns: "grid" }),
+    columnMenuFilter: t("columnMenuFilter", { ns: "grid" }),
+    columnMenuHideColumn: t("columnMenuHideColumn", { ns: "grid" }),
+    columnMenuUnsort: t("columnMenuUnsort", { ns: "grid" }),
+    columnMenuSortAsc: t("columnMenuSortAsc", { ns: "grid" }),
+    columnMenuSortDesc: t("columnMenuSortDesc", { ns: "grid" }),
+    columnHeaderFiltersTooltipActive: (count) =>
+      count !== 1
+        ? `${count} ${t("sortPlural", { ns: "grid" })}`
+        : `${count} ${t("sortSingular", { ns: "grid" })}`,
+    columnHeaderFiltersLabel: t("columnHeaderFiltersLabel", { ns: "grid" }),
+    columnHeaderSortIconLabel: t("columnHeaderSortIconLabel", { ns: "grid" }),
+  };
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -209,7 +274,7 @@ export const GroupPage = () => {
               size="small"
             >
               <AutorenewIcon sx={{ mr: ".5em" }} />
-              Refresh grid
+              {t("refresh_grid", { ns: "group" })}
             </Button>
           )}
         </Grid>
@@ -241,7 +306,11 @@ export const GroupPage = () => {
     groupService.groupList(param).then((res) => {
       if (!res.status) {
         setPageState((old) => ({ ...old, isLoading: false }));
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         setPageState((old) => ({
           ...old,
@@ -305,13 +374,22 @@ export const GroupPage = () => {
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
+          <ListItemText>
+            {t("button.edit").charAt(0).toUpperCase() +
+              t("button.edit").slice(1)}
+          </ListItemText>
         </MenuItem>
         <MenuItem onClick={deleteRestoreRow}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Delete/Restore</ListItemText>
+          <ListItemText>
+            {t("button.delete").charAt(0).toUpperCase() +
+              t("button.delete").slice(1)}
+            /
+            {t("button.restore").charAt(0).toUpperCase() +
+              t("button.restore").slice(1)}
+          </ListItemText>
         </MenuItem>
       </Menu>
     );
@@ -358,16 +436,16 @@ export const GroupPage = () => {
         myDialog(
           true,
           "form",
-          "Edit Group",
+          t("edit_group", { ns: "group" }),
           <GroupDialog type="edit" />,
           "sm",
           editGroup,
-          "Edit",
+          t("button.update"),
           () => {
             closeDialog();
             clearDialogState();
           },
-          "Cancel"
+          t("button.cancel")
         );
       }
     });
@@ -382,15 +460,25 @@ export const GroupPage = () => {
         myDialog(
           true,
           "confirm",
-          `${mode.charAt(0).toUpperCase() + mode.slice(1)} group`,
-          `Are you sure you want to ${mode} group ${row.name}?`,
+          `${
+            mode === "delete"
+              ? t("button.delete").charAt(0).toUpperCase() +
+                t("button.delete").slice(1)
+              : t("button.restore").charAt(0).toUpperCase() +
+                t("button.restore").slice(1)
+          } ${t("group", { ns: "group" })}`,
+          `${t("delete_restore_message", {
+            action:
+              mode === "delete" ? t("button.delete") : t("button.restore"),
+            target: row.name,
+          })}`,
           "xs",
           () => {
             mode === "delete" ? deleteGroup(row) : restoreGroup(row);
           },
-          `${mode.charAt(0).toUpperCase() + mode.slice(1)}`,
+          `${mode === "delete" ? t("button.delete") : t("button.restore")}`,
           closeDialog,
-          "Cancel"
+          t("button.cancel")
         );
         handleClose();
       }
@@ -421,12 +509,16 @@ export const GroupPage = () => {
     groupService.addGroup(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Group ${param.name} has been added`,
+          t("success"),
+          t("add_success", { ns: "group", subject: param.name }),
           "success",
           "bottom",
           "right"
@@ -450,12 +542,19 @@ export const GroupPage = () => {
     groupService.updateGroup(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Group ${useGroupDialogStore.getState().name} has been edited`,
+          t("success"),
+          t("edit_success", {
+            ns: "group",
+            subject: useGroupDialogStore.getState().name,
+          }),
           "success",
           "bottom",
           "right"
@@ -474,12 +573,16 @@ export const GroupPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     groupService.deleteGroup(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Group ${row.name} has been deleted`,
+          t("success"),
+          t("delete_success", { ns: "group", subject: row.name }),
           "success",
           "bottom",
           "right"
@@ -498,12 +601,16 @@ export const GroupPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     groupService.restoreGroup(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `Group ${row.name} has been restored`,
+          t("success"),
+          t("restore_success", { ns: "group", subject: row.name }),
           "success",
           "bottom",
           "right"
@@ -562,11 +669,11 @@ export const GroupPage = () => {
             size="small"
             fullWidth={matchesSm ? true : false}
           >
-            <InputLabel id="select-rpp">Rows per page</InputLabel>
+            <InputLabel id="select-rpp">{t("rpp", { ns: "group" })}</InputLabel>
             <Select
               labelId="select-rpp"
               value={pageState.pageSize}
-              label="Rows per page"
+              label={t("rpp", { ns: "group" })}
               onChange={(e) =>
                 setPageState((old) => ({ ...old, pageSize: e.target.value }))
               }
@@ -583,16 +690,16 @@ export const GroupPage = () => {
               myDialog(
                 true,
                 "form",
-                "Add Group",
+                t("add_group", { ns: "group" }),
                 <GroupDialog type="add" />,
                 "sm",
                 addGroup,
-                "Add",
+                t("button.add"),
                 () => {
                   closeDialog();
                   clearDialogState();
                 },
-                "Cancel"
+                t("button.cancel")
               );
               useGroupDialogStore.setState(
                 (state) => (state.reloadListFunc = reloadSelector)
@@ -602,7 +709,7 @@ export const GroupPage = () => {
             fullWidth={matchesSm ? true : false}
           >
             <AddIcon />
-            Add Group
+            {t("add_group", { ns: "group" })}
           </Button>
         </Grid>
       </Grid>
@@ -610,6 +717,7 @@ export const GroupPage = () => {
         <div style={{ display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
             <DataGrid
+              localeText={gridLocale}
               sx={{
                 height: "100%",
                 width: "100%",

@@ -22,6 +22,6 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345')
         ]);
         // Create random user 100 times
-        \App\Models\User::factory(100)->create();
+        // \App\Models\User::factory(100)->create();
     }
 }

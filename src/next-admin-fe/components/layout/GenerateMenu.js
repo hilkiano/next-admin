@@ -7,7 +7,9 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import Link from "@mui/material/Link";
+import Link from "next/link";
+
+import { MyBackdrop, myBackdrop } from "../reusable/MyBackdrop";
 
 class NestedList extends React.Component {
   state = { open: {} };
@@ -16,8 +18,12 @@ class NestedList extends React.Component {
     this.setState({ [key]: !this.state[key] });
   };
 
+  showLoading = (message) => {
+    myBackdrop(true, message);
+  };
+
   render() {
-    const { lists, activeLink } = this.props;
+    const { lists, activeLink, message } = this.props;
 
     return (
       <div>
@@ -27,18 +33,21 @@ class NestedList extends React.Component {
             if (!is_parent) {
               return (
                 <div key={name}>
-                  <ListItemButton
-                    component={Link}
-                    to={activeLink === name ? "#" : url}
-                    selected={activeLink === name}
-                  >
-                    <ListItemIcon>
-                      <Icon color={activeLink === name ? "primary" : "inherit"}>
-                        {icon}
-                      </Icon>
-                    </ListItemIcon>
-                    <ListItemText primary={label} />
-                  </ListItemButton>
+                  <Link href={url}>
+                    <ListItemButton
+                      onClick={() => this.showLoading(message)}
+                      selected={activeLink === name}
+                    >
+                      <ListItemIcon>
+                        <Icon
+                          color={activeLink === name ? "primary" : "inherit"}
+                        >
+                          {icon}
+                        </Icon>
+                      </ListItemIcon>
+                      <ListItemText primary={label} />
+                    </ListItemButton>
+                  </Link>
                 </div>
               );
             } else {
@@ -60,25 +69,25 @@ class NestedList extends React.Component {
                           icon: childIcon,
                           url: childUrl,
                         }) => (
-                          <ListItemButton
-                            key={childName}
-                            component={Link}
-                            to={activeLink === childName ? "#" : childUrl}
-                            selected={activeLink === childName}
-                          >
-                            <ListItemIcon sx={{ ml: "1em" }}>
-                              <Icon
-                                color={
-                                  activeLink === childName
-                                    ? "primary"
-                                    : "inherit"
-                                }
-                              >
-                                {childIcon}
-                              </Icon>
-                            </ListItemIcon>
-                            <ListItemText primary={childLabel} />
-                          </ListItemButton>
+                          <Link key={childName} href={childUrl}>
+                            <ListItemButton
+                              onClick={() => this.showLoading(message)}
+                              selected={activeLink === childName}
+                            >
+                              <ListItemIcon sx={{ ml: "1em" }}>
+                                <Icon
+                                  color={
+                                    activeLink === childName
+                                      ? "primary"
+                                      : "inherit"
+                                  }
+                                >
+                                  {childIcon}
+                                </Icon>
+                              </ListItemIcon>
+                              <ListItemText primary={childLabel} />
+                            </ListItemButton>
+                          </Link>
                         )
                       )}
                     </List>

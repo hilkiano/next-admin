@@ -259,7 +259,7 @@ class MenuController extends Controller
             if ($menu->is_parent) {
                 array_push($org, (object)[
                     "name"      => $menu->name,
-                    "label"     => $menu->label,
+                    "label"     => trans("menu.{$menu->name}"),
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon,
@@ -268,7 +268,7 @@ class MenuController extends Controller
             } else if (empty($menu->parent)) {
                 array_push($org, (object)[
                     "name"      => $menu->name,
-                    "label"     => $menu->label,
+                    "label"     => trans("menu.{$menu->name}"),
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon
@@ -286,7 +286,7 @@ class MenuController extends Controller
             if ($menu->parent === $parentName) {
                 array_push($children, (object)[
                     "name"      => $menu->name,
-                    "label"     => $menu->label,
+                    "label"     => trans("menu.{$menu->name}"),
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon,

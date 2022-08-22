@@ -1,0 +1,14 @@
+{
+    "privilege": "Hak Akses",
+    "rpp": "Baris per halaman",
+    "refresh_grid": "Muat Ulang",
+    "add_privilege": "Tambah Hak Akses",
+    "id": "ID",
+    "name": "Nama",
+    "description": "Deskripsi",
+    "edit_privilege": "Perbarui Hak Akses",
+    "add_success": "Hak Akses {{subject}} sudah ditambahkan",
+    "edit_success": "Hak Akses {{subject}} sudah diperbarui",
+    "delete_success": "Hak Akses {{subject}} sudah dihapus",
+    "restore_success": "Hak Akses {{subject}} sudah dipulihkan"
+}

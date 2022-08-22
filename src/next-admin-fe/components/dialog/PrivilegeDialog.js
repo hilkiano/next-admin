@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTranslation } from "next-i18next";
 
 export const usePrivilegeDialogStore = create((set) => ({
   name: "",
@@ -14,6 +15,7 @@ export const usePrivilegeDialogStore = create((set) => ({
 }));
 
 export const PrivilegeDialog = ({ type }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -33,7 +35,7 @@ export const PrivilegeDialog = ({ type }) => {
           <TextField
             sx={{ mt: 0, mb: 0 }}
             id="name"
-            label="Name"
+            label={t("name", { ns: "privilege" })}
             variant="outlined"
             margin="normal"
             fullWidth
@@ -48,7 +50,7 @@ export const PrivilegeDialog = ({ type }) => {
             rows={4}
             sx={{ mt: 0, mb: 0, flex: 1 }}
             id="desc"
-            label="Description"
+            label={t("description", { ns: "privilege" })}
             variant="outlined"
             margin="normal"
             fullWidth

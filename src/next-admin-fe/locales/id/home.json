@@ -1,0 +1,9 @@
+{
+    "homepage": "Halaman Beranda",
+    "welcome": "Selamat datang",
+    "button": {
+        "info": "Perbarui Informasi Pengguna",
+        "choose_image": "Pilih Gambar"
+    },
+    "updated_info": "Info Anda telah diperbarui"
+}

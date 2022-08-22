@@ -22,6 +22,8 @@ import Pagination from "@mui/material/Pagination";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
+import Chip from "@mui/material/Chip";
+import { useTranslation } from "next-i18next";
 
 import { userService } from "../../services/userService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -33,6 +35,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import UpdateIcon from "@mui/icons-material/Update";
 import DeleteIcon from "@mui/icons-material/Delete";
+import GroupIcon from "@mui/icons-material/Group";
 
 const stringToColor = (string) => {
   let hash = 0;
@@ -69,76 +72,211 @@ const stringAvatar = (name) => {
       fontSize: "0.95rem",
       width: "40px",
       height: "40px",
+      mt: ".4em",
+      mb: ".4em",
     },
     children: getInitial(name),
   };
 };
 
-const MyAvatar = (name) => {
-  return <Avatar {...stringAvatar(name)} />;
+const imgAvatar = (name, url) => {
+  return {
+    sx: {
+      width: "40px",
+      height: "40px",
+      mt: ".4em",
+      mb: ".4em",
+    },
+    src: url,
+    alt: name,
+  };
 };
 
-const columns = [
-  { field: "id", headerName: "ID", width: 50 },
-  {
-    field: "avatar",
-    headerName: "Avatar",
-    width: 80,
-    editable: false,
-    renderCell: (v) => {
-      return MyAvatar(v.row.name);
-    },
-    align: "center",
-    sortable: false,
-    filterable: false,
-  },
-  {
-    field: "username",
-    headerName: "Username",
-    width: 200,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "name",
-    headerName: "Name",
-    minWidth: 200,
-    flex: 1,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    minWidth: 200,
-    flex: 1,
-    filterOperators: getGridStringOperators().filter(
-      (operator) =>
-        operator.value === "contains" ||
-        operator.value === "equals" ||
-        operator.value === "startsWith" ||
-        operator.value === "endsWith"
-    ),
-  },
-];
+const MyAvatar = (name, imgUrl) => {
+  if (imgUrl) {
+    return <Avatar {...imgAvatar(name, imgUrl)} />;
+  } else {
+    return <Avatar {...stringAvatar(name)} />;
+  }
+};
 
 export const UserPage = () => {
+  const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
   const auth = useAuthStore.getState().user;
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const gridLocale = {
+    noRowsLabel: t("noRowsLabel", { ns: "grid" }),
+    noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
+    errorOverlayDefaultLabel: t("errorOverlayDefaultLabel", { ns: "grid" }),
+    columnsPanelTextFieldLabel: t("columnsPanelTextFieldLabel", { ns: "grid" }),
+    columnsPanelTextFieldPlaceholder: t("columnsPanelTextFieldPlaceholder", {
+      ns: "grid",
+    }),
+    columnsPanelDragIconLabel: t("columnsPanelDragIconLabel", { ns: "grid" }),
+    columnsPanelShowAllButton: t("columnsPanelShowAllButton", { ns: "grid" }),
+    columnsPanelHideAllButton: t("columnsPanelHideAllButton", { ns: "grid" }),
+    filterPanelAddFilter: t("filterPanelAddFilter", { ns: "grid" }),
+    filterPanelDeleteIconLabel: t("filterPanelDeleteIconLabel", { ns: "grid" }),
+    filterPanelLinkOperator: t("filterPanelLinkOperator", { ns: "grid" }),
+    filterPanelOperators: t("filterPanelOperators", { ns: "grid" }),
+    filterPanelOperatorAnd: t("filterPanelOperatorAnd", { ns: "grid" }),
+    filterPanelOperatorOr: t("filterPanelOperatorOr", { ns: "grid" }),
+    filterPanelColumns: t("filterPanelColumns", { ns: "grid" }),
+    filterPanelInputLabel: t("filterPanelInputLabel", { ns: "grid" }),
+    filterPanelInputPlaceholder: t("filterPanelInputPlaceholder", {
+      ns: "grid",
+    }),
+    filterOperatorContains: t("filterOperatorContains", { ns: "grid" }),
+    filterOperatorEquals: t("filterOperatorEquals", { ns: "grid" }),
+    filterOperatorStartsWith: t("filterOperatorStartsWith", { ns: "grid" }),
+    filterOperatorEndsWith: t("filterOperatorEndsWith", { ns: "grid" }),
+    filterOperatorIs: t("filterOperatorIs", { ns: "grid" }),
+    filterOperatorNot: t("filterOperatorNot", { ns: "grid" }),
+    filterOperatorAfter: t("filterOperatorAfter", { ns: "grid" }),
+    filterOperatorOnOrAfter: t("filterOperatorOnOrAfter", { ns: "grid" }),
+    filterOperatorBefore: t("filterOperatorBefore", { ns: "grid" }),
+    filterOperatorOnOrBefore: t("filterOperatorOnOrBefore", { ns: "grid" }),
+    filterOperatorIsEmpty: t("filterOperatorIsEmpty", { ns: "grid" }),
+    filterOperatorIsNotEmpty: t("filterOperatorIsNotEmpty", { ns: "grid" }),
+    filterOperatorIsAnyOf: t("filterOperatorIsAnyOf", { ns: "grid" }),
+    filterValueAny: t("filterValueAny", { ns: "grid" }),
+    filterValueTrue: t("filterValueTrue", { ns: "grid" }),
+    filterValueFalse: t("filterValueFalse", { ns: "grid" }),
+    columnMenuLabel: t("columnMenuLabel", { ns: "grid" }),
+    columnMenuShowColumns: t("columnMenuShowColumns", { ns: "grid" }),
+    columnMenuFilter: t("columnMenuFilter", { ns: "grid" }),
+    columnMenuHideColumn: t("columnMenuHideColumn", { ns: "grid" }),
+    columnMenuUnsort: t("columnMenuUnsort", { ns: "grid" }),
+    columnMenuSortAsc: t("columnMenuSortAsc", { ns: "grid" }),
+    columnMenuSortDesc: t("columnMenuSortDesc", { ns: "grid" }),
+    columnHeaderFiltersTooltipActive: (count) =>
+      count !== 1
+        ? `${count} ${t("sortPlural", { ns: "grid" })}`
+        : `${count} ${t("sortSingular", { ns: "grid" })}`,
+    columnHeaderFiltersLabel: t("columnHeaderFiltersLabel", { ns: "grid" }),
+    columnHeaderSortIconLabel: t("columnHeaderSortIconLabel", { ns: "grid" }),
+  };
+
+  const columns = [
+    {
+      field: "id",
+      headerName: t("id", { ns: "user" }),
+      width: 75,
+      type: "number",
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "avatar",
+      headerName: t("avatar", { ns: "user" }),
+      width: 80,
+      editable: false,
+      renderCell: (v) => {
+        return MyAvatar(
+          v.row.name,
+          v.row.avatar_url
+            ? `${process.env.NEXT_PUBLIC_BE_HOST}/${v.row.avatar_url}`
+            : null
+        );
+      },
+      align: "center",
+      sortable: false,
+      filterable: false,
+    },
+    {
+      field: "username",
+      headerName: t("username"),
+      width: 200,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "name",
+      headerName: t("name"),
+      minWidth: 200,
+      flex: 1,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "email",
+      headerName: t("email", { ns: "user" }),
+      minWidth: 200,
+      filterOperators: getGridStringOperators().filter(
+        (operator) =>
+          operator.value === "contains" ||
+          operator.value === "equals" ||
+          operator.value === "startsWith" ||
+          operator.value === "endsWith"
+      ),
+    },
+    {
+      field: "groups",
+      headerName: t("group"),
+      minWidth: 300,
+      flex: 1,
+      filterable: false,
+      sortable: false,
+      renderCell: (v) => {
+        if (v.row.groups.length > 0) {
+          return (
+            <Box
+              sx={{
+                pt: ".5em",
+                maxHeight: "inherit",
+                width: "100%",
+                whiteSpace: "initial",
+                lineHeight: "16px",
+              }}
+            >
+              {v.row.groups.slice(0, 3).map((group) => {
+                return (
+                  <Chip
+                    key={group.group.id}
+                    icon={<GroupIcon />}
+                    sx={{ mr: ".5em", mb: ".5em" }}
+                    label={group.group.name}
+                    variant="outlined"
+                  />
+                );
+              })}
+              {v.row.groups.length > 3 ? (
+                <Chip
+                  sx={{ mr: ".5em", mb: ".5em" }}
+                  label={`${v.row.groups.length - 3} +`}
+                  variant="filled"
+                  color="primary"
+                />
+              ) : (
+                <></>
+              )}
+            </Box>
+          );
+        } else {
+          return "-";
+        }
+      },
+    },
+  ];
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -186,7 +324,7 @@ export const UserPage = () => {
               size="small"
             >
               <AutorenewIcon sx={{ mr: ".5em" }} />
-              Refresh grid
+              {t("refresh_grid", { ns: "user" })}
             </Button>
           )}
         </Grid>
@@ -218,7 +356,11 @@ export const UserPage = () => {
     userService.userList(param).then((res) => {
       if (!res.status) {
         setPageState((old) => ({ ...old, isLoading: false }));
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         setPageState((old) => ({
           ...old,
@@ -282,13 +424,22 @@ export const UserPage = () => {
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Edit</ListItemText>
+          <ListItemText>
+            {t("button.edit").charAt(0).toUpperCase() +
+              t("button.edit").slice(1)}
+          </ListItemText>
         </MenuItem>
         <MenuItem onClick={deleteRestoreRow}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Delete/Restore</ListItemText>
+          <ListItemText>
+            {t("button.delete").charAt(0).toUpperCase() +
+              t("button.delete").slice(1)}
+            /
+            {t("button.restore").charAt(0).toUpperCase() +
+              t("button.restore").slice(1)}
+          </ListItemText>
         </MenuItem>
       </Menu>
     );
@@ -322,16 +473,16 @@ export const UserPage = () => {
         myDialog(
           true,
           "form",
-          "Edit User",
+          t("edit_user", { ns: "user" }),
           <UserDialog type="edit" />,
           "sm",
           editUser,
-          "Edit",
+          t("button.update"),
           () => {
             closeDialog();
             clearDialogState();
           },
-          "Cancel"
+          t("button.cancel")
         );
       }
     });
@@ -346,8 +497,8 @@ export const UserPage = () => {
         if (selectedRow === auth.id) {
           myAlert(
             true,
-            "Warning!",
-            `User ${row.username} is logged in. You cannot delete this user.`,
+            t("error.warning"),
+            t("warning_user_delete_message", { target: row.username }),
             "warning",
             "bottom",
             "right"
@@ -356,15 +507,25 @@ export const UserPage = () => {
           myDialog(
             true,
             "confirm",
-            `${mode.charAt(0).toUpperCase() + mode.slice(1)} user`,
-            `Are you sure you want to ${mode} user ${row.username}?`,
+            `${
+              mode === "delete"
+                ? t("button.delete").charAt(0).toUpperCase() +
+                  t("button.delete").slice(1)
+                : t("button.restore").charAt(0).toUpperCase() +
+                  t("button.restore").slice(1)
+            } ${t("user", { ns: "user" })}`,
+            `${t("delete_restore_message", {
+              action:
+                mode === "delete" ? t("button.delete") : t("button.restore"),
+              target: row.username,
+            })}`,
             "xs",
             () => {
               mode === "delete" ? deleteUser(row) : restoreUser(row);
             },
-            `${mode.charAt(0).toUpperCase() + mode.slice(1)}`,
+            `${mode === "delete" ? t("button.delete") : t("button.restore")}`,
             closeDialog,
-            "Cancel"
+            t("button.cancel")
           );
           handleClose();
         }
@@ -397,22 +558,22 @@ export const UserPage = () => {
     userService.addUser(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `User ${param.username} has been added`,
+          t("success"),
+          t("add_success", { ns: "user", subject: param.username }),
           "success",
           "bottom",
           "right"
         );
-        useMyDialogStore.setState((state) => {
-          state.open = false;
-          state.username = "";
-          state.name = "";
-          state.email = "";
-        });
+        closeDialog();
+        clearDialogState();
         loadUserList();
       }
     });
@@ -428,22 +589,25 @@ export const UserPage = () => {
     userService.updateUser(param).then((res) => {
       useMyDialogStore.setState((state) => (state.loading = false));
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `User ${useUserDialogStore.getState().username} has been edited`,
+          t("success"),
+          t("edit_success", {
+            ns: "user",
+            subject: useUserDialogStore.getState().username,
+          }),
           "success",
           "bottom",
           "right"
         );
-        useMyDialogStore.setState((state) => {
-          state.open = false;
-          state.username = "";
-          state.name = "";
-          state.email = "";
-        });
+        closeDialog();
+        clearDialogState();
         loadUserList();
       }
     });
@@ -456,12 +620,16 @@ export const UserPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     userService.deleteUser(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `User ${row.username} has been deleted`,
+          t("success"),
+          t("delete_success", { ns: "user", subject: row.username }),
           "success",
           "bottom",
           "right"
@@ -480,12 +648,16 @@ export const UserPage = () => {
     useMyDialogStore.setState((state) => (state.loading = true));
     userService.restoreUser(param).then((res) => {
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
-          "Success",
-          `User ${row.username} has been restored`,
+          t("success"),
+          t("restore_success", { ns: "user", subject: row.username }),
           "success",
           "bottom",
           "right"
@@ -525,11 +697,11 @@ export const UserPage = () => {
             size="small"
             fullWidth={matchesSm ? true : false}
           >
-            <InputLabel id="select-rpp">Rows per page</InputLabel>
+            <InputLabel id="select-rpp">{t("rpp", { ns: "user" })}</InputLabel>
             <Select
               labelId="select-rpp"
               value={pageState.pageSize}
-              label="Rows per page"
+              label={t("rpp", { ns: "user" })}
               onChange={(e) =>
                 setPageState((old) => ({ ...old, pageSize: e.target.value }))
               }
@@ -546,23 +718,23 @@ export const UserPage = () => {
               myDialog(
                 true,
                 "form",
-                "Add User",
+                t("add_user", { ns: "user" }),
                 <UserDialog type="add" />,
                 "sm",
                 addUser,
-                "Add",
+                t("button.add", { ns: "common" }),
                 () => {
                   closeDialog();
                   clearDialogState();
                 },
-                "Cancel"
+                t("button.cancel", { ns: "common" })
               )
             }
             variant="contained"
             fullWidth={matchesSm ? true : false}
           >
             <AddIcon />
-            Add User
+            {t("add_user", { ns: "user" })}
           </Button>
         </Grid>
       </Grid>
@@ -570,6 +742,7 @@ export const UserPage = () => {
         <div style={{ display: "flex", height: "100%" }}>
           <div style={{ flexGrow: 1 }}>
             <DataGrid
+              localeText={gridLocale}
               sx={{
                 height: "100%",
                 width: "100%",
@@ -598,6 +771,7 @@ export const UserPage = () => {
               autoHeight={false}
               rows={pageState.data}
               rowCount={pageState.total}
+              getRowHeight={() => "auto"}
               columns={columns}
               getRowId={(row) => row.id}
               page={pageState.page - 1}

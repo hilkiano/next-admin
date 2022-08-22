@@ -1,0 +1,17 @@
+{
+    "user": "User",
+    "rpp": "Rows per page",
+    "refresh_grid": "Refresh Grid",
+    "add_user": "Add User",
+    "id": "ID",
+    "avatar": "Avatar",
+    "username": "Username",
+    "name": "Name",
+    "email": "Email",
+    "group": "Group",
+    "edit_user": "Edit User",
+    "add_success": "User {{subject}} has been added",
+    "edit_success": "User {{subject}} has been edited",
+    "delete_success": "User {{subject}} has been deleted",
+    "restore_success": "User {{subject}} has been restored"
+}

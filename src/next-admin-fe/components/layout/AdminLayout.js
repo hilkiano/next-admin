@@ -1,10 +1,12 @@
 import React from "react";
+import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import NestedList from "./GenerateMenu";
+import { useTranslation } from "next-i18next";
 
 import Appbar from "./Appbar";
 
@@ -13,20 +15,26 @@ import { MyAlert } from "../reusable/MyAlert";
 const drawerWidth = 300;
 
 export default function AdminLayout(props) {
-  const { window, name, title, content } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const { t } = useTranslation(["common"]);
+  const router = useRouter();
+  const { window, name, title, content, user } = props;
 
+  if (!user) {
+    router.push("/login");
+    return;
+  }
+
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const menuList = JSON.parse(localStorage.getItem("menus"));
-
+  const menuList = user.menus;
+  const message = t("please_wait");
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
-      <NestedList lists={menuList} activeLink={name} />
+      <NestedList lists={menuList} activeLink={name} message={message} />
     </div>
   );
 
@@ -36,7 +44,11 @@ export default function AdminLayout(props) {
     <>
       <Box sx={{ display: { md: "flex", sm: "flex" } }}>
         <CssBaseline />
-        <Appbar title={title} handleDrawerToggle={handleDrawerToggle} />
+        <Appbar
+          title={title}
+          handleDrawerToggle={handleDrawerToggle}
+          user={user}
+        />
         <Box
           component="nav"
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}

@@ -42,7 +42,11 @@ export const myAlert = (
   });
 };
 
-export const errorHandling = (resp) => {
+export const errorHandling = (
+  resp,
+  errText = "Error",
+  errStatus = "No Status"
+) => {
   let message = "";
   if (resp) {
     if (typeof resp.data === "object" && resp.status === 422) {
@@ -58,17 +62,8 @@ export const errorHandling = (resp) => {
     }
     myAlert(
       true,
-      `Error ${resp.status}: ${resp.statusText}`,
+      `${errText}: ${errStatus}`,
       parse(message),
-      "error",
-      "bottom",
-      "right"
-    );
-  } else {
-    myAlert(
-      true,
-      `Unexpected error`,
-      `No response from server.`,
       "error",
       "bottom",
       "right"

@@ -59,7 +59,7 @@ class GroupController extends Controller
             } else {
                 $total = Group::withTrashed()->count();
             }
-    
+
             $group = $group->offset(($page - 1) * $limit)
                 ->limit($limit)
                 ->orderBy($field, $sort);
@@ -155,22 +155,18 @@ class GroupController extends Controller
             $validator = Validator::make($request->all(), [
                 'name'          => 'required|unique:groups',
                 'description'   => 'required',
-                'roles'         => 'required|array',
-                'roles.*'       => 'required',
-                'users'         => 'required|array',
-                'users.*'       => 'required'
             ]);
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-    
+
             $group = Group::create([
                 'name'          => $request->input('name'),
                 'description'   => $request->input('description')
             ]);
 
             $this->assignUsersAndRoles($request->input('users'), $request->input('roles'), $group->id);
-    
+
             if ($group) {
                 return response()->json([
                     'success' => true,
@@ -198,10 +194,6 @@ class GroupController extends Controller
             $validator = Validator::make($request->all(), [
                 'name'          => 'required',
                 'description'   => 'required',
-                'roles'         => 'required|array',
-                'roles.*'       => 'required',
-                'users'         => 'required|array',
-                'users.*'       => 'required'
             ]);
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "next-i18next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import parse from "html-react-parser";
 
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -13,17 +13,21 @@ import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
 
-import { MyAlert, myAlert } from "../reusable/MyAlert";
+import { errorHandling, MyAlert, myAlert } from "../reusable/MyAlert";
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LoginIcon from "@mui/icons-material/Login";
 
 import { userService } from "../../services/userService";
 import { useAuthStore } from "../store/AuthStore";
 import { useMyAvatarStore } from "../reusable/MyAvatar";
 
 export default function LoginPage(props) {
+  const { t } = useTranslation(["login", "common"]);
   const setUser = useAuthStore((state) => state.setUser);
   const setName = useMyAvatarStore((state) => state.setName);
   const theme = useTheme();
@@ -42,50 +46,21 @@ export default function LoginPage(props) {
     userService.login(username, password).then((res) => {
       setLoading(false);
       if (!res.status) {
-        openSnackbar("error", res.data);
-      } else {
-        localStorage.setItem(
-          "token",
-          Buffer.from(res.data.data.token, "utf8").toString("base64")
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
         );
-        localStorage.setItem("user", JSON.stringify(res.data.data.user));
-        localStorage.setItem("menus", JSON.stringify(res.data.data.menus));
-        setUser(res.data.data.user);
-        setName(res.data.data.user.name);
+      } else {
         router.push("/");
       }
     });
   };
 
-  const openSnackbar = (state, resp) => {
-    let message = "";
-    if (state === "error" && resp) {
-      if (typeof resp.data === "object" && resp.status === 422) {
-        for (const field in resp.data) {
-          if (Array.isArray(resp.data[field])) {
-            resp.data[field].map((msg) => {
-              message += `${msg}<br />`;
-            });
-          }
-        }
-      } else {
-        message = resp.data.message;
-      }
-      myAlert(
-        true,
-        `Error ${resp.status}: ${resp.statusText}`,
-        parse(message),
-        state
-      );
-    } else {
-      myAlert(true, `Unexpected error`, `No response from server.`, state);
-    }
-  };
-
   return (
     <>
       <Head>
-        <title>Login Page</title>
+        <title>{t("login_page")}</title>
       </Head>
       <Grid
         container
@@ -101,11 +76,11 @@ export default function LoginPage(props) {
             elevation={matchesSm ? 0 : 6}
           >
             <CardContent>
-              <Typography variant="h4">Login</Typography>
+              <Typography variant="h4">{t("login")}</Typography>
               <form onSubmit={(e) => e.preventDefault()}>
                 <TextField
                   id="username"
-                  label="Username"
+                  label={t("username", { ns: "common" })}
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -114,7 +89,7 @@ export default function LoginPage(props) {
                 />
                 <TextField
                   id="password"
-                  label="Password"
+                  label={t("password", { ns: "common" })}
                   type={showPassword ? "text" : "password"}
                   variant="outlined"
                   fullWidth
@@ -124,20 +99,30 @@ export default function LoginPage(props) {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
+                        <Tooltip
+                          title={
+                            showPassword
+                              ? t("show_password")
+                              : t("hide_password")
+                          }
                         >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </Tooltip>
                       </InputAdornment>
                     ),
                   }}
                 />
+                <Divider sx={{ mt: "1em" }} />
                 <LoadingButton
                   loading={loading}
-                  loadingIndicator="Please wait…"
+                  loadingPosition="start"
+                  startIcon={<LoginIcon />}
                   variant="contained"
                   fullWidth
                   sx={{ mt: "1em" }}
@@ -145,7 +130,7 @@ export default function LoginPage(props) {
                   size="large"
                   type="submit"
                 >
-                  Login
+                  {t("login")}
                 </LoadingButton>
               </form>
             </CardContent>

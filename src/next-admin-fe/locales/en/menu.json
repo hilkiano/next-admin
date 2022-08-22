@@ -1,0 +1,19 @@
+{
+    "menu": "Menu",
+    "rpp": "Rows per page",
+    "refresh_grid": "Refresh Grid",
+    "add_menu": "Add Menu",
+    "id": "ID",
+    "name": "Name",
+    "label": "Label",
+    "parent_menu": "Parent Menu?",
+    "parent": "Parent",
+    "icon": "Icon",
+    "url": "Link",
+    "edit_menu": "Edit Menu",
+    "add_success": "Menu {{subject}} has been added",
+    "edit_success": "Menu {{subject}} has been edited",
+    "delete_success": "Menu {{subject}} has been deleted",
+    "restore_success": "Menu {{subject}} has been restored",
+    "icon_placeholder": "type icon name based on Material Icon (ex. golf_course)"
+}

@@ -1,0 +1,15 @@
+{
+    "role": "Peran",
+    "rpp": "Baris per halaman",
+    "refresh_grid": "Muat Ulang",
+    "add_role": "Tambah Peran",
+    "id": "ID",
+    "name": "Nama",
+    "description": "Deskripsi",
+    "privileges": "Hak Akses",
+    "edit_role": "Perbarui Peran",
+    "add_success": "Peran {{subject}} sudah ditambahkan",
+    "edit_success": "Peran {{subject}} sudah diperbarui",
+    "delete_success": "Peran {{subject}} sudah dihapus",
+    "restore_success": "Peran {{subject}} sudah dipulihkan"
+}

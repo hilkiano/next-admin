@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useTranslation } from "next-i18next";
 
 export const useGroupDialogStore = create((set) => ({
   name: "",
@@ -27,6 +28,7 @@ export const useGroupDialogStore = create((set) => ({
 }));
 
 export const GroupDialog = ({ type }) => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -58,7 +60,7 @@ export const GroupDialog = ({ type }) => {
         <TextField
           sx={{ mt: 0, mb: 0 }}
           id="name"
-          label="Name"
+          label={t("name", { ns: "group" })}
           variant="outlined"
           margin="normal"
           fullWidth
@@ -71,7 +73,7 @@ export const GroupDialog = ({ type }) => {
         <TextField
           sx={{ mt: 0, mb: 0 }}
           id="description"
-          label="Description"
+          label={t("description", { ns: "group" })}
           variant="outlined"
           margin="normal"
           rows={4}
@@ -84,6 +86,10 @@ export const GroupDialog = ({ type }) => {
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <Autocomplete
+          clearText={t("clear")}
+          closeText={t("close")}
+          openText={t("open")}
+          noOptionsText={t("no_options")}
           value={users}
           multiple
           id="select-user"
@@ -94,8 +100,8 @@ export const GroupDialog = ({ type }) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Users"
-              placeholder="Type something..."
+              label={t("users", { ns: "group" })}
+              placeholder={t("type_something")}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
@@ -117,6 +123,10 @@ export const GroupDialog = ({ type }) => {
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <Autocomplete
+          clearText={t("clear")}
+          closeText={t("close")}
+          openText={t("open")}
+          noOptionsText={t("no_options")}
           value={roles}
           multiple
           id="select-role"
@@ -127,8 +137,8 @@ export const GroupDialog = ({ type }) => {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Roles"
-              placeholder="Type something..."
+              label={t("roles", { ns: "group" })}
+              placeholder={t("type_something")}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (
