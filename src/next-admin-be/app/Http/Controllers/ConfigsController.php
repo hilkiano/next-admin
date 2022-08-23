@@ -47,7 +47,7 @@ class ConfigsController extends Controller
     }
 
     /**
-     * Update configs
+     * Update default configs
      *
      * @param Illuminate\Http\Request $request
      * @return \Illuminate\Support\Facades\Response
