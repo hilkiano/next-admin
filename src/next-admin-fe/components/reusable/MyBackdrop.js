@@ -72,7 +72,7 @@ export const MyBackdrop = () => {
             ? "rgb(0, 0, 0)"
             : "rgb(0, 0, 0)",
       }}
-      open={open}
+      open={(open) ? open : false}
       transitionDuration={{
         appear: appearMs,
         enter: enterMs,

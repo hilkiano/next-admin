@@ -11,42 +11,42 @@ import { useTranslation } from "next-i18next";
 import ImageIcon from "@mui/icons-material/Image";
 
 export const useUpdateUserInfoDialogStore = create((set) => ({
-  name: "",
-  setName: (newName) => set({ name: newName }),
-  img: null,
-  setImg: (newImg) => set({ img: newImg }),
-  previewUrl: null,
-  setPreviewUrl: (newUrl) => set({ previewUrl: newUrl }),
+  dName: "",
+  setDName: (newName) => set({ dName: newName }),
+  dImg: null,
+  setDImg: (newImg) => set({ dImg: newImg }),
+  dPreviewUrl: null,
+  setDPreviewUrl: (newUrl) => set({ dPreviewUrl: newUrl }),
 }));
 
 export const UpdateUserInfoDialog = (props) => {
   const { t } = useTranslation(["common", "home"]);
-  const { user } = props;
+  const { name } = props;
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const { name, setName, img, setImg, previewUrl, setPreviewUrl } =
+  const { dName, setDName, dImg, setDImg, dPreviewUrl, setDPreviewUrl } =
     useUpdateUserInfoDialogStore();
 
   const onSelectImage = (e) => {
-    setImg(e.target.files[0]);
+    setDImg(e.target.files[0]);
   };
 
   useEffect(() => {
-    setName(user.user.name);
+    setDName(name);
   }, []);
 
   useEffect(() => {
-    if (!img && !previewUrl) {
-      setPreviewUrl(null);
+    if (!dImg && !dPreviewUrl) {
+      setDPreviewUrl(null);
       return;
     }
-    const objectUrl = img ? URL.createObjectURL(img) : previewUrl;
-    setPreviewUrl(objectUrl);
+    const objectUrl = dImg ? URL.createObjectURL(dImg) : dPreviewUrl;
+    setDPreviewUrl(objectUrl);
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
-  }, [img]);
+  }, [dImg]);
 
   return (
     <Grid
@@ -56,11 +56,11 @@ export const UpdateUserInfoDialog = (props) => {
       spacing={matchesSm ? 1 : 2}
     >
       <Grid item xs={12} sm={5} md={5}>
-        {img ? (
+        {dImg ? (
           <Image
             src={
-              useUpdateUserInfoDialogStore.getState().previewUrl
-                ? useUpdateUserInfoDialogStore.getState().previewUrl
+              useUpdateUserInfoDialogStore.getState().dPreviewUrl
+                ? useUpdateUserInfoDialogStore.getState().dPreviewUrl
                 : "/no_image.png"
             }
             alt="me"
@@ -68,9 +68,9 @@ export const UpdateUserInfoDialog = (props) => {
             height="200"
             objectFit="cover"
           />
-        ) : !img && previewUrl ? (
+        ) : !dImg && dPreviewUrl ? (
           <Image
-            src={previewUrl}
+            src={dPreviewUrl}
             alt="me"
             width="200"
             height="200"
@@ -96,8 +96,8 @@ export const UpdateUserInfoDialog = (props) => {
             margin="normal"
             fullWidth
             required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={dName}
+            onChange={(e) => setDName(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>

@@ -20,6 +20,7 @@ export const useRoleDialogStore = create((set) => ({
   rowEdit: null,
   setRowEdit: (row) => set({ rowEdit: row }),
   dropdownLoading: false,
+  setDropdownLoading: (e) => set({ dropdownLoading: e }),
 }));
 
 export const RoleDialog = ({ type }) => {

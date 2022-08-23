@@ -66,7 +66,6 @@ class ConfigsController extends Controller
                 $keys = array_map(function ($k) {
                     return str_replace('nextadmin_database_', '', $k);
                 }, $keys);
-                Log::info(print_r($keys, true));
                 Redis::del($keys);
             }
 

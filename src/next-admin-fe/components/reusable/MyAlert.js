@@ -86,7 +86,7 @@ export const MyAlert = () => {
   return (
     <Snackbar
       anchorOrigin={{ vertical, horizontal }}
-      open={open}
+      open={(open) ? open : false}
       autoHideDuration={duration}
       onClose={handleClose}
       key={vertical + horizontal}

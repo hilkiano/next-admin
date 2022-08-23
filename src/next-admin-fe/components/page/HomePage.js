@@ -18,13 +18,6 @@ import { useMyAvatarStore } from "../reusable/MyAvatar";
 
 import EditIcon from "@mui/icons-material/Edit";
 
-const useHomePageStore = create((set) => ({
-  homeName: "",
-  setHomeName: (newName) => set({ homeName: newName }),
-  homeImgUrl: null,
-  setHomeImgUrl: (newUrl) => set({ homeImgUrl: newUrl }),
-}));
-
 const stringToColor = (string = "No Name") => {
   let hash = 0;
   let i;
@@ -69,38 +62,39 @@ const MyAvatar = (name) => {
   return <Avatar {...stringAvatar(name)} />;
 };
 
-const closeDialog = () => {
-  useUpdateUserInfoDialogStore.setState((state) => {
-    state.name = "";
-    state.img = null;
-    state.previewUrl = null;
-  });
-  useMyDialogStore.setState((state) => (state.open = false));
-};
-
 export const HomePage = (props) => {
   const { t } = useTranslation(["common", "home"]);
   const { user } = props;
-  const setPreviewUrl = useUpdateUserInfoDialogStore(
-    (state) => state.setPreviewUrl
-  );
   const { name, imgUrl, setName, setImgUrl } = useMyAvatarStore();
+  const { dName, setDName, dImg, setDImg, dPreviewUrl, setDPreviewUrl} = useUpdateUserInfoDialogStore();
+  const { setOpen, setLoading } = useMyDialogStore();
+  const { handleClose } = useMyDialogStore();
+  const closeDialog = () => {
+    setDName("");
+    setDImg(null);
+    setDPreviewUrl(null);
+    handleClose();
+  };
 
   const updateMyInfo = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       id: user.user.id,
-      name: useUpdateUserInfoDialogStore.getState().name,
-      img: useUpdateUserInfoDialogStore.getState().img,
+      name: useUpdateUserInfoDialogStore.getState().dName,
+      img: useUpdateUserInfoDialogStore.getState().dImg,
     };
     const formData = new FormData();
     for (var key in param) {
       formData.append(key, param[key]);
     }
     userService.updateInfo(formData).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false)
       if (!res.status) {
-        errorHandling(res.data);
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
       } else {
         myAlert(
           true,
@@ -110,7 +104,7 @@ export const HomePage = (props) => {
           "bottom",
           "right"
         );
-        useMyDialogStore.setState((state) => (state.open = false));
+        setOpen(false);
         setName(res.data.user.name);
         if (res.data.user.avatar_url) {
           setImgUrl(res.data.user.avatar_url);
@@ -164,7 +158,7 @@ export const HomePage = (props) => {
                 true,
                 "form",
                 t("button.info", { ns: "home" }),
-                <UpdateUserInfoDialog user={user} />,
+                <UpdateUserInfoDialog name={name} />,
                 "sm",
                 updateMyInfo,
                 t("button.update"),
@@ -172,7 +166,7 @@ export const HomePage = (props) => {
                 t("button.cancel")
               );
               if (imgUrl) {
-                setPreviewUrl(`${process.env.NEXT_PUBLIC_BE_HOST}/${imgUrl}`);
+                setDPreviewUrl(`${process.env.NEXT_PUBLIC_BE_HOST}/${imgUrl}`);
               }
             }}
           >

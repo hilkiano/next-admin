@@ -23,8 +23,9 @@ export const useGroupDialogStore = create((set) => ({
   setListRoles: (newList) => set({ listRoles: newList }),
   rowEdit: null,
   setRowEdit: (row) => set({ rowEdit: row }),
-  reloadListFunc: () => {},
+  reloadListFunc: () => { },
   dropdownLoading: false,
+  setDropdownLoading: (s) => set({ dropdownLoading: s })
 }));
 
 export const GroupDialog = ({ type }) => {

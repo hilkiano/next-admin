@@ -33,6 +33,7 @@ export default function Appbar({ title, handleDrawerToggle, user }) {
   const router = useRouter();
   const theme = useTheme();
   const { name, setName, setImgUrl } = useMyAvatarStore();
+  const handleClose = useMyDialogStore((state) => state.handleClose);
 
   const [loading, setLoading] = useState(false);
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -164,9 +165,7 @@ export default function Appbar({ title, handleDrawerToggle, user }) {
                       logoutHandler,
                       t("button.yes"),
                       () => {
-                        useMyDialogStore.setState((state) =>
-                          state.handleClose()
-                        );
+                        handleClose();
                         handleCloseMenu();
                       },
                       t("button.no")
