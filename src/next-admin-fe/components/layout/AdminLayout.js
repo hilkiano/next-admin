@@ -18,7 +18,6 @@ export default function AdminLayout(props) {
   const { t } = useTranslation(["common"]);
   const router = useRouter();
   const { window, name, title, content, user } = props;
-
   if (!user) {
     router.push("/login");
     return;

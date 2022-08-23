@@ -180,6 +180,20 @@ export const RolePage = () => {
       },
     },
   ];
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    privs,
+    setPrivs,
+    listPrivs,
+    setListPrivs,
+    rowEdit,
+    setRowEdit,
+    setDropdownLoading,
+  } = useRoleDialogStore();
+  const { setOpen, setLoading } = useMyDialogStore();
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -373,12 +387,10 @@ export const RolePage = () => {
                 return priv.privilege;
               })
             : [];
-        useRoleDialogStore.setState((state) => {
-          state.setName(row.name);
-          state.setDescription(row.description);
-          state.setPrivs(privArr);
-          state.setRowEdit(row);
-        });
+        setName(row.name);
+        setDescription(row.description);
+        setPrivs(privArr);
+        setRowEdit(row);
         myDialog(
           true,
           "form",
@@ -432,24 +444,24 @@ export const RolePage = () => {
   };
 
   const closeDialog = () => {
-    useMyDialogStore.setState((state) => (state.open = false));
+    setOpen(false);
   };
 
   const clearDialogState = () => {
-    useRoleDialogStore.setState((state) => {
-      state.setName(""), state.setDescription(""), state.setPrivs([]);
-    });
+    setName("");
+    setDescription("");
+    setPrivs([]);
   };
 
   const addRole = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       name: useRoleDialogStore.getState().name,
       description: useRoleDialogStore.getState().description,
       privileges: useRoleDialogStore.getState().privs,
     };
     roleService.addRole(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -473,7 +485,7 @@ export const RolePage = () => {
   };
 
   const editRole = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       id: useRoleDialogStore.getState().rowEdit.id,
       name: useRoleDialogStore.getState().name,
@@ -481,7 +493,7 @@ export const RolePage = () => {
       privileges: useRoleDialogStore.getState().privs,
     };
     roleService.updateRole(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -511,7 +523,7 @@ export const RolePage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     roleService.deleteRole(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -531,7 +543,7 @@ export const RolePage = () => {
         closeDialog();
         loadRoleList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
@@ -539,7 +551,7 @@ export const RolePage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     roleService.restoreRole(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -559,14 +571,14 @@ export const RolePage = () => {
         closeDialog();
         loadRoleList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
   const reloadSelector = () => {
-    useRoleDialogStore.setState((state) => (state.dropdownLoading = true));
+    setDropdownLoading(true);
     roleService.dropdownList().then((res) => {
-      useRoleDialogStore.setState((state) => (state.dropdownLoading = false));
+      setDropdownLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -574,9 +586,7 @@ export const RolePage = () => {
           t(`error.${res.data.status}`, { ns: "common" })
         );
       } else {
-        useRoleDialogStore.setState((state) => {
-          state.setListPrivs(res.data.data.privileges);
-        });
+        setListPrivs(res.data.data.privileges);
       }
     });
   };

@@ -40,7 +40,7 @@ export default function User(props) {
       <AdminLayout
         name="user"
         title={title}
-        content={<UserPage />}
+        content={<UserPage user={props.user} />}
         user={props.user}
       />
     );

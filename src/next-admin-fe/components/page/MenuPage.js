@@ -42,6 +42,25 @@ export const MenuPage = () => {
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const {
+    name,
+    setName,
+    label,
+    setLabel,
+    isParent,
+    setIsParent,
+    url,
+    setUrl,
+    icon,
+    setIcon,
+    rowEdit,
+    setRowEdit,
+    parents,
+    setParents,
+    parent,
+    setParent,
+  } = useMenuDialogStore();
+  const { setOpen, setLoading } = useMyDialogStore();
   const gridLocale = {
     noRowsLabel: t("noRowsLabel", { ns: "grid" }),
     noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
@@ -280,7 +299,7 @@ export const MenuPage = () => {
             arrParent.push(menu.name);
           }
         });
-        useMenuDialogStore.setState((state) => (state.parents = arrParent));
+        setParents(arrParent);
         setPageState((old) => ({
           ...old,
           isLoading: false,
@@ -383,15 +402,13 @@ export const MenuPage = () => {
   const editRow = () => {
     pageState.data.map((row) => {
       if (row.id === selectedRow) {
-        useMenuDialogStore.setState((state) => {
-          state.setName(row.name);
-          state.setLabel(row.label);
-          state.setIcon(row.icon);
-          state.setIsParent(row.is_parent ? true : false);
-          row.parent ? state.setParent(row.parent) : null;
-          row.url ? state.setUrl(row.url) : null;
-          state.setRowEdit(row);
-        });
+        setName(row.name);
+        setLabel(row.label);
+        setIcon(row.icon);
+        setIsParent(row.is_parent ? true : false);
+        row.parent ? setParent(row.parent) : null;
+        row.url ? setUrl(row.url) : null;
+        setRowEdit(row);
         myDialog(
           true,
           "form",
@@ -419,12 +436,11 @@ export const MenuPage = () => {
         myDialog(
           true,
           "confirm",
-          `${
-            mode === "delete"
-              ? t("button.delete").charAt(0).toUpperCase() +
-                t("button.delete").slice(1)
-              : t("button.restore").charAt(0).toUpperCase() +
-                t("button.restore").slice(1)
+          `${mode === "delete"
+            ? t("button.delete").charAt(0).toUpperCase() +
+            t("button.delete").slice(1)
+            : t("button.restore").charAt(0).toUpperCase() +
+            t("button.restore").slice(1)
           } ${t("menu", { ns: "menu" })}`,
           `${t("delete_restore_message", {
             action:
@@ -445,23 +461,21 @@ export const MenuPage = () => {
   };
 
   const closeDialog = () => {
-    useMyDialogStore.setState((state) => (state.open = false));
+    setOpen(false);
   };
 
   const clearDialogState = () => {
-    useMenuDialogStore.setState((state) => {
-      state.setName("");
-      state.setLabel("");
-      state.setUrl("");
-      state.setIsParent(false);
-      state.setIcon("");
-      state.setParent(null);
-      state.setRowEdit(null);
-    });
+    setName("");
+    setLabel("");
+    setUrl("");
+    setIsParent(false);
+    setIcon("");
+    setParent(null);
+    setRowEdit(null);
   };
 
   const addMenu = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       name: useMenuDialogStore.getState().name,
       label: useMenuDialogStore.getState().label,
@@ -473,7 +487,7 @@ export const MenuPage = () => {
       param["parent"] = useMenuDialogStore.getState().parent;
     }
     menuService.addMenu(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -497,7 +511,7 @@ export const MenuPage = () => {
   };
 
   const editMenu = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       id: useMenuDialogStore.getState().rowEdit.id,
       name: useMenuDialogStore.getState().name,
@@ -510,7 +524,7 @@ export const MenuPage = () => {
       param["parent"] = useMenuDialogStore.getState().parent;
     }
     menuService.updateMenu(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -540,7 +554,7 @@ export const MenuPage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     menuService.deleteMenu(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -560,7 +574,7 @@ export const MenuPage = () => {
         closeDialog();
         loadMenuList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
@@ -568,7 +582,7 @@ export const MenuPage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     menuService.restoreMenu(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -588,7 +602,7 @@ export const MenuPage = () => {
         closeDialog();
         loadMenuList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 

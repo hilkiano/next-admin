@@ -136,6 +136,9 @@ export const PrivilegePage = () => {
       ),
     },
   ];
+  const { setOpen, setLoading } = useMyDialogStore();
+  const { name, setName, description, setDescription, rowEdit, setRowEdit } =
+    usePrivilegeDialogStore();
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -323,11 +326,9 @@ export const PrivilegePage = () => {
   const editRow = () => {
     pageState.data.map((row) => {
       if (row.id === selectedRow) {
-        usePrivilegeDialogStore.setState((state) => {
-          state.setName(row.name);
-          state.setDescription(row.description);
-          state.setRowEdit(row);
-        });
+        setName(row.name);
+        setDescription(row.description);
+        setRowEdit(row);
         myDialog(
           true,
           "form",
@@ -381,24 +382,22 @@ export const PrivilegePage = () => {
   };
 
   const closeDialog = () => {
-    useMyDialogStore.setState((state) => (state.open = false));
+    setOpen(false);
   };
 
   const clearDialogState = () => {
-    usePrivilegeDialogStore.setState((state) => {
-      state.setName("");
-      state.setDescription("");
-    });
+    setName("");
+    setDescription("");
   };
 
   const addPrivilege = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       name: usePrivilegeDialogStore.getState().name,
       description: usePrivilegeDialogStore.getState().description,
     };
     privilegeService.addPrivilege(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -422,14 +421,14 @@ export const PrivilegePage = () => {
   };
 
   const editPrivilege = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       id: usePrivilegeDialogStore.getState().rowEdit.id,
       name: usePrivilegeDialogStore.getState().name,
       description: usePrivilegeDialogStore.getState().description,
     };
     privilegeService.updatePrivilege(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -459,7 +458,7 @@ export const PrivilegePage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     privilegeService.deletePrivilege(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -479,7 +478,7 @@ export const PrivilegePage = () => {
         closeDialog();
         loadPrivilegeList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
@@ -487,7 +486,7 @@ export const PrivilegePage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     privilegeService.restorePrivilege(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -507,7 +506,7 @@ export const PrivilegePage = () => {
         closeDialog();
         loadPrivilegeList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 

@@ -13,6 +13,7 @@ import Backdrop from "@mui/material/Backdrop";
 
 export const useMyDialogStore = create((set) => ({
   open: false,
+  setOpen: (o) => set({ open: o }),
   handleClose: (event, reason) => {
     if (reason !== "backdropClick") {
       set({ open: false });
@@ -27,6 +28,7 @@ export const useMyDialogStore = create((set) => ({
   negativeAction: () => {},
   noBtn: "No",
   loading: false,
+  setLoading: (l) => set({ loading: l }),
 }));
 
 export const myDialog = (
@@ -73,14 +75,18 @@ export const MyDialog = () => {
 
   return (
     <Dialog
-      open={open}
+      open={open ? open : false}
       onClose={handleClose}
       fullWidth
       maxWidth={maxWidth}
       disableEscapeKeyDown
       fullScreen={matchesSm && type === "form" ? true : false}
     >
-      {loading ? <LinearProgress /> : null}
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <LinearProgress variant="determinate" value={0} />
+      )}
       <DialogTitle>{title}</DialogTitle>
       <DialogContent dividers>
         {type === "confirm" ? (

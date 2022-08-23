@@ -2,21 +2,14 @@ import React from "react";
 import create from "zustand";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
 import Icon from "@mui/material/Icon";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTranslation } from "next-i18next";
-
-import ClearIcon from "@mui/icons-material/Clear";
 
 export const useMenuDialogStore = create((set) => ({
   name: "",
@@ -32,6 +25,7 @@ export const useMenuDialogStore = create((set) => ({
   rowEdit: null,
   setRowEdit: (row) => set({ rowEdit: row }),
   parents: [],
+  setParents: (p) => set({ parents: p }),
   parent: null,
   setParent: (newParent) => set({ parent: newParent }),
 }));
@@ -102,7 +96,7 @@ export const MenuDialog = ({ type }) => {
                   setIsParent(e.target.checked);
                   if (e.target.checked) {
                     setUrl("");
-                    setParent("");
+                    setParent(null);
                   }
                 }}
               />

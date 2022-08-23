@@ -100,14 +100,17 @@ const MyAvatar = (name, imgUrl) => {
   }
 };
 
-export const UserPage = () => {
+export const UserPage = (props) => {
   const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
-  const auth = useAuthStore.getState().user;
+  const { user } = props;
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const { username, setUsername, name, setName, email, setEmail, rowEdit, setRowEdit } = useUserDialogStore();
+  const { setOpen, setLoading } = useMyDialogStore();
+
   const gridLocale = {
     noRowsLabel: t("noRowsLabel", { ns: "grid" }),
     noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
@@ -464,12 +467,10 @@ export const UserPage = () => {
   const editRow = () => {
     pageState.data.map((row) => {
       if (row.id === selectedRow) {
-        useUserDialogStore.setState((state) => {
-          state.setUsername(row.username);
-          state.setName(row.name);
-          state.setEmail(row.email);
-          state.setRowEdit(row);
-        });
+        setUsername(row.username);
+        setName(row.name);
+        setEmail(row.email);
+        setRowEdit(row);
         myDialog(
           true,
           "form",
@@ -494,7 +495,7 @@ export const UserPage = () => {
     pageState.data.map((row) => {
       if (row.id === selectedRow) {
         const mode = row.deleted_at ? "restore" : "delete";
-        if (selectedRow === auth.id) {
+        if (selectedRow === user.user.id) {
           myAlert(
             true,
             t("error.warning"),
@@ -507,12 +508,11 @@ export const UserPage = () => {
           myDialog(
             true,
             "confirm",
-            `${
-              mode === "delete"
-                ? t("button.delete").charAt(0).toUpperCase() +
-                  t("button.delete").slice(1)
-                : t("button.restore").charAt(0).toUpperCase() +
-                  t("button.restore").slice(1)
+            `${mode === "delete"
+              ? t("button.delete").charAt(0).toUpperCase() +
+              t("button.delete").slice(1)
+              : t("button.restore").charAt(0).toUpperCase() +
+              t("button.restore").slice(1)
             } ${t("user", { ns: "user" })}`,
             `${t("delete_restore_message", {
               action:
@@ -534,20 +534,18 @@ export const UserPage = () => {
   };
 
   const closeDialog = () => {
-    useMyDialogStore.setState((state) => (state.open = false));
+    setOpen(false);
   };
 
   const clearDialogState = () => {
-    useUserDialogStore.setState((state) => {
-      state.setUsername("");
-      state.setName("");
-      state.setEmail("");
-      state.setRowEdit(null);
-    });
+    setUsername("");
+    setName("");
+    setEmail("");
+    setRowEdit(null);
   };
 
   const addUser = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       username: useUserDialogStore.getState().username,
       name: useUserDialogStore.getState().name,
@@ -556,7 +554,7 @@ export const UserPage = () => {
       password_confirmation: "P@ssw0rd",
     };
     userService.addUser(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -580,14 +578,14 @@ export const UserPage = () => {
   };
 
   const editUser = () => {
+    setLoading(true);
     const param = {
       name: useUserDialogStore.getState().name,
       email: useUserDialogStore.getState().email,
       id: useUserDialogStore.getState().rowEdit.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
     userService.updateUser(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -614,11 +612,12 @@ export const UserPage = () => {
   };
 
   const deleteUser = (row) => {
+    setLoading(true);
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
     userService.deleteUser(param).then((res) => {
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -637,16 +636,16 @@ export const UserPage = () => {
         myDialog(false);
         loadUserList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
     });
   };
 
   const restoreUser = (row) => {
+    setLoading(true);
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
     userService.restoreUser(param).then((res) => {
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -665,7 +664,6 @@ export const UserPage = () => {
         myDialog(false);
         loadUserList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
     });
   };
 

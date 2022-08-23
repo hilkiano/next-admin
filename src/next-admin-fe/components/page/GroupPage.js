@@ -227,6 +227,23 @@ export const GroupPage = () => {
     columnHeaderFiltersLabel: t("columnHeaderFiltersLabel", { ns: "grid" }),
     columnHeaderSortIconLabel: t("columnHeaderSortIconLabel", { ns: "grid" }),
   };
+  const {
+    name,
+    setName,
+    description,
+    setDescription,
+    users,
+    setUsers,
+    listUsers,
+    setListUsers,
+    roles,
+    setRoles,
+    setListRoles,
+    rowEdit,
+    setRowEdit,
+    setDropdownLoading,
+  } = useGroupDialogStore();
+  const { setOpen, setLoading } = useMyDialogStore();
 
   const [pageState, setPageState] = useState({
     isLoading: false,
@@ -426,13 +443,11 @@ export const GroupPage = () => {
                 return role.role;
               })
             : [];
-        useGroupDialogStore.setState((state) => {
-          state.setName(row.name);
-          state.setDescription(row.description);
-          state.setUsers(userArr);
-          state.setRoles(roleArr);
-          state.setRowEdit(row);
-        });
+        setName(row.name);
+        setDescription(row.description);
+        setUsers(userArr);
+        setRoles(roleArr);
+        setRowEdit(row);
         myDialog(
           true,
           "form",
@@ -486,20 +501,18 @@ export const GroupPage = () => {
   };
 
   const closeDialog = () => {
-    useMyDialogStore.setState((state) => (state.open = false));
+    setOpen(false);
   };
 
   const clearDialogState = () => {
-    useGroupDialogStore.setState((state) => {
-      state.setName(""),
-        state.setDescription(""),
-        state.setUsers([]),
-        state.setRoles([]);
-    });
+    setName("");
+    setDescription("");
+    setUsers([]);
+    setRoles([]);
   };
 
   const addGroup = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       name: useGroupDialogStore.getState().name,
       description: useGroupDialogStore.getState().description,
@@ -507,7 +520,7 @@ export const GroupPage = () => {
       roles: useGroupDialogStore.getState().roles,
     };
     groupService.addGroup(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -531,7 +544,7 @@ export const GroupPage = () => {
   };
 
   const editGroup = () => {
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     const param = {
       id: useGroupDialogStore.getState().rowEdit.id,
       name: useGroupDialogStore.getState().name,
@@ -540,7 +553,7 @@ export const GroupPage = () => {
       roles: useGroupDialogStore.getState().roles,
     };
     groupService.updateGroup(param).then((res) => {
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
       if (!res.status) {
         errorHandling(
           res.data,
@@ -570,7 +583,7 @@ export const GroupPage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     groupService.deleteGroup(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -590,7 +603,7 @@ export const GroupPage = () => {
         closeDialog();
         loadGroupList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
@@ -598,7 +611,7 @@ export const GroupPage = () => {
     const param = {
       id: row.id,
     };
-    useMyDialogStore.setState((state) => (state.loading = true));
+    setLoading(true);
     groupService.restoreGroup(param).then((res) => {
       if (!res.status) {
         errorHandling(
@@ -618,21 +631,19 @@ export const GroupPage = () => {
         closeDialog();
         loadGroupList();
       }
-      useMyDialogStore.setState((state) => (state.loading = false));
+      setLoading(false);
     });
   };
 
   const reloadSelector = () => {
-    useGroupDialogStore.setState((state) => (state.dropdownLoading = true));
+    setDropdownLoading(true);
     groupService.dropdownList().then((res) => {
-      useGroupDialogStore.setState((state) => (state.dropdownLoading = false));
+      setDropdownLoading(false);
       if (!res.status) {
         errorHandling(res.data);
       } else {
-        useGroupDialogStore.setState((state) => {
-          state.setListUsers(res.data.data.users);
-          state.setListRoles(res.data.data.roles);
-        });
+        setListUsers(res.data.data.users);
+        setListRoles(res.data.data.roles);
       }
     });
   };
@@ -700,9 +711,6 @@ export const GroupPage = () => {
                   clearDialogState();
                 },
                 t("button.cancel")
-              );
-              useGroupDialogStore.setState(
-                (state) => (state.reloadListFunc = reloadSelector)
               );
             }}
             variant="contained"
