@@ -5,7 +5,7 @@
     "add_menu": "Add Menu",
     "id": "ID",
     "name": "Name",
-    "label": "Label",
+    "order": "Order",
     "parent_menu": "Parent Menu?",
     "parent": "Parent",
     "icon": "Icon",

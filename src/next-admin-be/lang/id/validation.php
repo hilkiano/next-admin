@@ -174,7 +174,7 @@ return [
         'privileges' => 'Hak Akses',
         'roles' => 'Peran',
         'users' => 'Pengguna',
-        'label' => 'Label',
+        'order' => 'Urutan',
         'icon' => 'Ikon'
     ],
 

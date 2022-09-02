@@ -2,19 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Menu extends Model
+class Timezone extends Model
 {
-    use SoftDeletes;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'menus';
+    protected $table = 'timezone';
 
     /**
      * The primary key associated with the table.
@@ -30,10 +28,6 @@ class Menu extends Model
      */
     protected $fillable = [
         'name',
-        'order',
-        'is_parent',
-        'url',
-        'icon',
-        'parent'
+        'offset',
     ];
 }

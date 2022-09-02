@@ -7,6 +7,8 @@ import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import NestedList from "./GenerateMenu";
 import { useTranslation } from "next-i18next";
+import { UserContext } from "../context/UserContext";
+import { AppInfo } from "../fragment/AppInfo";
 
 import Appbar from "./Appbar";
 
@@ -15,9 +17,10 @@ import { MyAlert } from "../reusable/MyAlert";
 const drawerWidth = 300;
 
 export default function AdminLayout(props) {
+  const { user, setUser } = React.useContext(UserContext);
   const { t } = useTranslation(["common"]);
   const router = useRouter();
-  const { window, name, title, content, user } = props;
+  const { window, name, title, content } = props;
   if (!user) {
     router.push("/login");
     return;
@@ -31,7 +34,11 @@ export default function AdminLayout(props) {
   const message = t("please_wait");
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar>
+        <React.Fragment>
+          <AppInfo />
+        </React.Fragment>
+      </Toolbar>
       <Divider />
       <NestedList lists={menuList} activeLink={name} message={message} />
     </div>
@@ -43,11 +50,7 @@ export default function AdminLayout(props) {
     <>
       <Box sx={{ display: { md: "flex", sm: "flex" } }}>
         <CssBaseline />
-        <Appbar
-          title={title}
-          handleDrawerToggle={handleDrawerToggle}
-          user={user}
-        />
+        <Appbar title={title} handleDrawerToggle={handleDrawerToggle} />
         <Box
           component="nav"
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { useTheme } from "@mui/material/styles";
@@ -15,6 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Skeleton from "@mui/material/Skeleton";
+import { UserContext } from "../context/UserContext";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -28,7 +29,8 @@ import { MyDialog, myDialog, useMyDialogStore } from "../reusable/MyDialog";
 import { useAuthStore } from "../store/AuthStore";
 import { useMyAvatarStore, MyAvatar } from "../reusable/MyAvatar";
 
-export default function Appbar({ title, handleDrawerToggle, user }) {
+export default function Appbar({ title, handleDrawerToggle }) {
+  const { user, setUser } = useContext(UserContext);
   const { t } = useTranslation();
   const router = useRouter();
   const theme = useTheme();

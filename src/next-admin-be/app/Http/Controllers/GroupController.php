@@ -10,6 +10,7 @@ use App\Models\GroupRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\ActivityLogController;
 
 class GroupController extends Controller
 {
@@ -152,6 +153,7 @@ class GroupController extends Controller
     public function add(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required|unique:groups',
                 'description'   => 'required',
@@ -159,15 +161,17 @@ class GroupController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Create new group
             $group = Group::create([
                 'name'          => $request->input('name'),
                 'description'   => $request->input('description')
             ]);
-
+            // Assign group with users and roles
             $this->assignUsersAndRoles($request->input('users'), $request->input('roles'), $group->id);
-
+            // Return response
             if ($group) {
+                $activityLog = new ActivityLogController();
+                $activityLog->create(auth()->user()->id, config('constants.activity-log.add_group'), true);
                 return response()->json([
                     'success' => true,
                     'group'   => $group,
@@ -175,6 +179,8 @@ class GroupController extends Controller
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.add_group'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -191,6 +197,7 @@ class GroupController extends Controller
     public function update(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required',
                 'description'   => 'required',
@@ -198,22 +205,26 @@ class GroupController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Find group by ID and update its information
             $group = Group::find($request->input('id'));
             $group->name = $request->input('name');
             $group->description = $request->input('description');
             $group->save();
-
+            // Delete previous user and role assignment and set new pairs
             GroupUser::where('group_id', $request->input('id'))->delete();
             GroupRole::where('group_id', $request->input('id'))->delete();
             $this->assignUsersAndRoles($request->input('users'), $request->input('roles'), $group->id);
-
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_group'), true);
             return response()->json([
                 'success'   => $group,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_group'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -261,13 +272,19 @@ class GroupController extends Controller
     public function delete(Request $request)
     {
         try {
+            // Find group by ID and delete it
             $group = Group::find($request->input('id'))->delete();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_group'), true);
             return response()->json([
                 'success'   => $group,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_group'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -284,13 +301,19 @@ class GroupController extends Controller
     public function restore(Request $request)
     {
         try {
+            // Find group by ID and restore it
             $group = Group::withTrashed()->find($request->input('id'))->restore();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_group'), true);
             return response()->json([
                 'success'   => $group,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_group'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'

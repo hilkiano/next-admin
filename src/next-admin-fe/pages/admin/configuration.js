@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { ConfigurationPage } from "../../components/page/ConfigurationPage";
+import { UserContext } from "../../components/context/UserContext";
 
 import {
   MyBackdrop,
@@ -15,6 +16,7 @@ export default function Configuration(props) {
   const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     myBackdrop(
@@ -31,6 +33,7 @@ export default function Configuration(props) {
     const lang = props.configs.find((a) => a.name === "app.language").value;
     router.push(router.route, router.asPath, { locale: lang });
     useMyBackdropStore.setState((state) => (state.open = false));
+    setUser(props.user);
     setLoading(false);
   }, []);
 
@@ -40,7 +43,9 @@ export default function Configuration(props) {
       <AdminLayout
         name="configuration"
         title={title}
-        content={<ConfigurationPage configs={props.configs} />}
+        content={
+          <ConfigurationPage configs={props.configs} tzList={props.tzList} />
+        }
         user={props.user}
       />
     );
@@ -64,6 +69,12 @@ export async function getServerSideProps(ctx) {
     const user = await fetch(`${process.env.NEXT_PUBLIC_BE_HOST}/api/me`, opts);
     const resUser = await user.json();
     arrPromise.push(resUser);
+    const tzList = await fetch(
+      `${process.env.NEXT_PUBLIC_BE_HOST}/api/timezone/list`,
+      opts
+    );
+    const resTzList = await tzList.json();
+    arrPromise.push(resTzList);
   }
 
   const responses = await Promise.all(arrPromise);
@@ -71,6 +82,7 @@ export async function getServerSideProps(ctx) {
     props: {
       configs: responses[0].data,
       user: responses[1] ? responses[1] : null,
+      tzList: responses[2] && responses[2].success ? responses[2].data : null,
       ...(await serverSideTranslations(ctx.locale, ["common", "configs"])),
     },
   };

@@ -2,8 +2,10 @@
     "homepage": "Halaman Beranda",
     "welcome": "Selamat datang",
     "button": {
-        "info": "Perbarui Informasi Pengguna",
+        "info": "Klik untuk memperbarui profil Anda",
         "choose_image": "Pilih Gambar"
     },
-    "updated_info": "Info Anda telah diperbarui"
+    "updated_info": "Info Anda telah diperbarui",
+    "last_user_activity": "Aktivitas terbaru",
+    "profile": "Profil"
 }

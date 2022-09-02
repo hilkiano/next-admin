@@ -13,16 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('timezone', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->integer('order');
-            $table->boolean('is_parent');
-            $table->string('parent')->nullable();
-            $table->string('icon');
-            $table->string('url')->nullable();
+            $table->string('name');
+            $table->string('offset');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('timezone');
     }
 };

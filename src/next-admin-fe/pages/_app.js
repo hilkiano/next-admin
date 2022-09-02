@@ -7,9 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import Router from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import { UserContext } from "../components/context/UserContext";
 
 import createEmotionCache from "../utility/createEmotionCache";
 import lightTheme from "../styles/theme/lightTheme";
+import darkTheme from "../styles/theme/darkTheme";
 import "../styles/globals.css";
 
 const clientSideEmotionCache = createEmotionCache();
@@ -36,25 +38,33 @@ const MyApp = (props) => {
       opacity: 0,
     },
   };
+  const [user, setUser] = React.useState(null);
+  const providerUser = React.useMemo(
+    () => ({ user, setUser }),
+    [user, setUser]
+  );
+  const theme = pageProps.configs.find((a) => a.name === "app.theme").value;
 
   return (
     <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={lightTheme}>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
         <CssBaseline />
-        <AnimatePresence exitBeforeEnter>
-          <motion.div
-            key={router.route}
-            initial="pageInitial"
-            animate="pageAnimate"
-            exit="pageExit"
-            transition={{
-              duration: 0.2,
-            }}
-            variants={pageAnimation}
-          >
-            <Component {...pageProps} />
-          </motion.div>
-        </AnimatePresence>
+        <UserContext.Provider value={providerUser}>
+          <AnimatePresence exitBeforeEnter>
+            <motion.div
+              key={router.route}
+              initial="pageInitial"
+              animate="pageAnimate"
+              exit="pageExit"
+              transition={{
+                duration: 0.2,
+              }}
+              variants={pageAnimation}
+            >
+              <Component {...pageProps} />
+            </motion.div>
+          </AnimatePresence>
+        </UserContext.Provider>
       </ThemeProvider>
     </CacheProvider>
   );

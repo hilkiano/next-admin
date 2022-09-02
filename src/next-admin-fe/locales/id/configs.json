@@ -3,8 +3,14 @@
     "configs": "Konfigurasi",
     "language": "Bahasa",
     "language_desc": "Atur bahasa bawaan aplikasi.",
+    "theme": "Tema",
+    "theme_desc": "Atur tema bawaan aplikasi.",
+    "timezone": "Zona Waktu",
+    "timezone_desc": "Atur zona waktu bawaan aplikasi.",
     "english_main": "Inggris",
     "english_sec": "English",
     "indo_main": "Indonesia",
-    "indo_sec": "Indonesia"
+    "indo_sec": "Indonesia",
+    "light": "Mode terang",
+    "dark": "Mode gelap"
 }

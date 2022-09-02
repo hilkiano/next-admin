@@ -6,6 +6,8 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ConfigsController;
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\TimezoneController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('configs', [ConfigsController::class, 'get'])->name('get.configs');
+Route::get('timezone/list', [TimezoneController::class, 'list'])->name('list.timezone');
 
 Route::post('register', [UserController::class, 'register'])->name('register');
 Route::post('login', [UserController::class, 'login'])->name('login');
@@ -67,5 +70,8 @@ Route::group(['middleware' => 'auth.jwt'], function () use ($router) {
     });
     $router->group(['prefix' => 'configs'], function () use ($router) {
         $router->post('update', [ConfigsController::class, 'update'])->name('configs.update');
+    });
+    $router->group(['prefix' => 'log'], function () use ($router) {
+        $router->get('list', [ActivityLogController::class, 'list'])->name('log.list');
     });
 });

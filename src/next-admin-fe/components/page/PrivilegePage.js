@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
@@ -21,6 +21,7 @@ import Pagination from "@mui/material/Pagination";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
+import { UserContext } from "../context/UserContext";
 
 import { privilegeService } from "../../services/privilegeService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -40,6 +41,18 @@ export const PrivilegePage = () => {
   const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
+  const { user, setUser } = useContext(UserContext);
+  // Privilege
+  const canAddPrivilege = user.privileges.some(
+    (a) => a.name === "ACT_ADD_PRIVILEGE"
+  );
+  const canEditPrivilege = user.privileges.some(
+    (a) => a.name === "ACT_EDIT_PRIVILEGE"
+  );
+  const canDelResPrivilege = user.privileges.some(
+    (a) => a.name === "ACT_DELETE_RESTORE_PRIVILEGE"
+  );
+  // End of privilege
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -282,7 +295,7 @@ export const PrivilegePage = () => {
           },
         }}
       >
-        <MenuItem onClick={editRow}>
+        <MenuItem onClick={editRow} disabled={!canEditPrivilege}>
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
@@ -291,7 +304,7 @@ export const PrivilegePage = () => {
               t("button.edit").slice(1)}
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={deleteRestoreRow}>
+        <MenuItem onClick={deleteRestoreRow} disabled={!canDelResPrivilege}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -557,6 +570,7 @@ export const PrivilegePage = () => {
         </Grid>
         <Grid item>
           <Button
+            disabled={!canAddPrivilege}
             onClick={() => {
               myDialog(
                 true,

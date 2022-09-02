@@ -44,8 +44,8 @@ export default function LoginPage(props) {
   const loginHandler = () => {
     setLoading(true);
     userService.login(username, password).then((res) => {
-      setLoading(false);
       if (!res.status) {
+        setLoading(false);
         errorHandling(
           res.data,
           t("error.error", { ns: "common" }),

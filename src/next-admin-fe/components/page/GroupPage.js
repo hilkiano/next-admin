@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
@@ -22,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import { UserContext } from "../context/UserContext";
 
 import { groupService } from "../../services/groupService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -37,7 +38,16 @@ import LocalPoliceIcon from "@mui/icons-material/LocalPolice";
 import { useTranslation } from "next-i18next";
 
 export const GroupPage = () => {
+  const { user, setUser } = useContext(UserContext);
+  // Privilege
+  const canAddGroup = user.privileges.some((a) => a.name === "ACT_ADD_GROUP");
+  const canEditGroup = user.privileges.some((a) => a.name === "ACT_EDIT_GROUP");
+  const canDelResGroup = user.privileges.some(
+    (a) => a.name === "ACT_DELETE_RESTORE_GROUP"
+  );
+  // End of privilege
   const { t } = useTranslation();
+
   const columns = [
     {
       field: "id",
@@ -387,7 +397,7 @@ export const GroupPage = () => {
           },
         }}
       >
-        <MenuItem onClick={editRow}>
+        <MenuItem onClick={editRow} disabled={!canEditGroup}>
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
@@ -396,7 +406,7 @@ export const GroupPage = () => {
               t("button.edit").slice(1)}
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={deleteRestoreRow}>
+        <MenuItem onClick={deleteRestoreRow} disabled={!canDelResGroup}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -697,6 +707,7 @@ export const GroupPage = () => {
         </Grid>
         <Grid item>
           <Button
+            disabled={!canAddGroup}
             onClick={() => {
               myDialog(
                 true,

@@ -8,6 +8,7 @@ use App\Models\Privilege;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\ActivityLogController;
 
 class RoleController extends Controller
 {
@@ -128,6 +129,7 @@ class RoleController extends Controller
     public function add(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required|unique:roles',
                 'description'   => 'required',
@@ -137,12 +139,12 @@ class RoleController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Create new rule
             $role = Role::create([
                 'name'          => $request->input('name'),
                 'description'   => $request->input('description')
             ]);
-
+            // Create new role's privileges
             $arrPriv = [];
             foreach ($request->input('privileges') as $privilege) {
                 array_push($arrPriv, [
@@ -151,8 +153,11 @@ class RoleController extends Controller
                 ]);
             }
             $rp = RolePrivilege::insert($arrPriv);
-
+            // Return response
             if ($role) {
+                // Return response
+                $activityLog = new ActivityLogController();
+                $activityLog->create(auth()->user()->id, config('constants.activity-log.add_role'), true);
                 return response()->json([
                     'success' => true,
                     'role'    => $role,
@@ -160,6 +165,9 @@ class RoleController extends Controller
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.add_role'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -176,6 +184,7 @@ class RoleController extends Controller
     public function update(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required',
                 'description'   => 'required',
@@ -185,12 +194,12 @@ class RoleController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Find role by ID and update its information
             $role = Role::find($request->input('id'));
             $role->name = $request->input('name');
             $role->description = $request->input('description');
             $role->save();
-
+            // Delete previous role's privileges and create new pairs
             RolePrivilege::where('role_id', $request->input('id'))->delete();
             $arrPriv = [];
             foreach ($request->input('privileges') as $privilege) {
@@ -200,13 +209,17 @@ class RoleController extends Controller
                 ]);
             }
             $rp = RolePrivilege::insert($arrPriv);
-
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_role'), true);
             return response()->json([
                 'success'   => $role,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_role'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -223,13 +236,19 @@ class RoleController extends Controller
     public function delete(Request $request)
     {
         try {
+            // Delete role by ID
             $role = Role::find($request->input('id'))->delete();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_role'), true);
             return response()->json([
                 'success'   => $role,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_role'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -246,13 +265,19 @@ class RoleController extends Controller
     public function restore(Request $request)
     {
         try {
+            // Restore role by ID
             $role = Role::withTrashed()->find($request->input('id'))->restore();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_role'), true);
             return response()->json([
                 'success'   => $role,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_role'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'

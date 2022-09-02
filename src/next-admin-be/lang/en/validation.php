@@ -174,7 +174,7 @@ return [
         'privileges' => 'Privileges',
         'roles' => 'Roles',
         'users' => 'Users',
-        'label' => 'Label',
+        'order' => 'Order',
         'icon' => 'Icon'
     ],
 

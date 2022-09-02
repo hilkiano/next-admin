@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
@@ -24,12 +24,12 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "next-i18next";
+import { UserContext } from "../context/UserContext";
 
 import { userService } from "../../services/userService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
 import { myDialog, MyDialog, useMyDialogStore } from "../reusable/MyDialog";
 import { UserDialog, useUserDialogStore } from "../dialog/UserDialog";
-import { useAuthStore } from "../store/AuthStore";
 
 import AddIcon from "@mui/icons-material/Add";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
@@ -100,15 +100,31 @@ const MyAvatar = (name, imgUrl) => {
   }
 };
 
-export const UserPage = (props) => {
+export const UserPage = () => {
   const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
-  const { user } = props;
+  const { user, setUser } = useContext(UserContext);
+  // Privilege
+  const canAddUser = user.privileges.some((a) => a.name === "ACT_ADD_USER");
+  const canEditUser = user.privileges.some((a) => a.name === "ACT_EDIT_USER");
+  const canDelResUser = user.privileges.some(
+    (a) => a.name === "ACT_DELETE_RESTORE_USER"
+  );
+  // End of privilege
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const { username, setUsername, name, setName, email, setEmail, rowEdit, setRowEdit } = useUserDialogStore();
+  const {
+    username,
+    setUsername,
+    name,
+    setName,
+    email,
+    setEmail,
+    rowEdit,
+    setRowEdit,
+  } = useUserDialogStore();
   const { setOpen, setLoading } = useMyDialogStore();
 
   const gridLocale = {
@@ -423,7 +439,7 @@ export const UserPage = (props) => {
           },
         }}
       >
-        <MenuItem onClick={editRow}>
+        <MenuItem onClick={editRow} disabled={!canEditUser}>
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
@@ -432,7 +448,7 @@ export const UserPage = (props) => {
               t("button.edit").slice(1)}
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={deleteRestoreRow}>
+        <MenuItem onClick={deleteRestoreRow} disabled={!canDelResUser}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -508,11 +524,12 @@ export const UserPage = (props) => {
           myDialog(
             true,
             "confirm",
-            `${mode === "delete"
-              ? t("button.delete").charAt(0).toUpperCase() +
-              t("button.delete").slice(1)
-              : t("button.restore").charAt(0).toUpperCase() +
-              t("button.restore").slice(1)
+            `${
+              mode === "delete"
+                ? t("button.delete").charAt(0).toUpperCase() +
+                  t("button.delete").slice(1)
+                : t("button.restore").charAt(0).toUpperCase() +
+                  t("button.restore").slice(1)
             } ${t("user", { ns: "user" })}`,
             `${t("delete_restore_message", {
               action:
@@ -712,6 +729,7 @@ export const UserPage = (props) => {
         </Grid>
         <Grid item>
           <Button
+            disabled={!canAddUser}
             onClick={() =>
               myDialog(
                 true,

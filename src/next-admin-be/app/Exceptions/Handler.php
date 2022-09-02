@@ -53,14 +53,14 @@ class Handler extends ExceptionHandler
             //
         });
         $this->renderable(function (TokenInvalidException $e, $request) {
-            return Response::json(['error' => 'Invalid token'], 401);
+            return Response::json(['error' => trans("message.token_invalid")], 401);
         });
         $this->renderable(function (TokenExpiredException $e, $request) {
-            return Response::json(['error' => 'Token has Expired'], 401);
+            return Response::json(['error' => trans("message.token_expired")], 401);
         });
 
         $this->renderable(function (JWTException $e, $request) {
-            return Response::json(['error' => 'Token not parsed'], 401);
+            return Response::json(['error' => trans("message.token_not_parsed")], 401);
         });
     }
 }
