@@ -1,8 +1,34 @@
+import React, { useEffect, useState, useContext } from "react";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { DataGrid } from "@mui/x-data-grid";
+import { logService } from "../../services/logService";
+import { errorHandling } from "../reusable/MyAlert";
+import { UserContext } from "../context/UserContext";
+import moment from "moment";
+import "moment/locale/id";
 
-export const GridLocale = () => {
+export const ActivityLogTable = () => {
+  const { user, setUser } = useContext(UserContext);
   const { t } = useTranslation();
-
+  const router = useRouter();
+  const [pageState, setPageState] = useState({
+    isLoading: false,
+    data: [],
+    total: 0,
+    page: 1,
+    pageSize: 5,
+    sort: "asc",
+    field: "created_at",
+    filterField: null,
+    filterMode: null,
+    filterValue: null,
+  });
+  const theme = useTheme();
+  const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
+  const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
   const gridLocale = {
     noRowsLabel: t("noRowsLabel", { ns: "grid" }),
     noResultsOverlayLabel: t("noResultsOverlayLabel", { ns: "grid" }),
@@ -55,6 +81,91 @@ export const GridLocale = () => {
     columnHeaderFiltersLabel: t("columnHeaderFiltersLabel", { ns: "grid" }),
     columnHeaderSortIconLabel: t("columnHeaderSortIconLabel", { ns: "grid" }),
   };
+  const columns = [
+    {
+      field: "created_at",
+      headerName: t("datetime"),
+      width: 200,
+      type: "dateTime",
+      sortable: false,
+      filterable: false,
+      renderCell: (v) => {
+        return moment(v.row.created_at)
+          .locale(router.locale)
+          .format("DD MMM YYYY HH:mm:ss");
+      },
+    },
+    {
+      field: "log_string",
+      headerName: t("activity"),
+      width: 400,
+      type: "string",
+      sortable: false,
+      filterable: false,
+      renderCell: (v) => {
+        return t(v.row.log_string, { ns: "log" });
+      },
+    },
+    {
+      field: "status",
+      headerName: t("status"),
+      minWidth: 100,
+      type: "boolean",
+      flex: 1,
+      sortable: false,
+      filterable: false,
+    },
+  ];
 
-  return gridLocale;
+  const loadActivityLog = () => {
+    setPageState((old) => ({ ...old, isLoading: true }));
+    const param = {
+      mode: "top-5",
+    };
+    logService.list(param).then((res) => {
+      setPageState((old) => ({ ...old, isLoading: false }));
+      if (!res.status) {
+        errorHandling(
+          res.data,
+          t("error.error", { ns: "common" }),
+          t(`error.${res.data.status}`, { ns: "common" })
+        );
+      } else {
+        setPageState((old) => ({
+          ...old,
+          data: res.data.data,
+          total: res.data.total,
+        }));
+      }
+    });
+  };
+
+  useEffect(() => {
+    loadActivityLog();
+  }, []);
+
+  return (
+    <div style={{ height: 318, width: "100%" }}>
+      <div style={{ display: "flex", height: "100%" }}>
+        <div style={{ flexGrow: 1 }}>
+          <DataGrid
+            localeText={gridLocale}
+            sx={{
+              height: "100%",
+              width: "100%",
+            }}
+            rows={pageState.data}
+            rowCount={pageState.total}
+            columns={columns}
+            getRowId={(row) => row.id}
+            disableSelectionOnClick
+            loading={pageState.isLoading}
+            rowsPerPageOptions={[5]}
+            hideFooter={true}
+            autoPageSize={true}
+          />
+        </div>
+      </div>
+    </div>
+  );
 };

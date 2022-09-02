@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('activity_log', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->integer('order');
-            $table->boolean('is_parent');
-            $table->string('parent')->nullable();
-            $table->string('icon');
-            $table->string('url')->nullable();
+            $table->integer('user_id');
+            $table->string('log_string');
+            $table->enum('status', ['success', 'fail'])->default('success');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menus');
+        Schema::dropIfExists('activity_log');
     }
 };

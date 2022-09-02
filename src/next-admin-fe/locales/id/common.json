@@ -7,7 +7,8 @@
             "content": "Tidak ada balasan dari server"
         },
         "422": "Konten gagal diproses",
-        "401": "Akses tidak sah"
+        "401": "Akses tidak sah",
+        "405": "Metode tidak diijinkan"
     },
     "button": {
         "ok": "oke",
@@ -46,5 +47,8 @@
     "open": "Buka",
     "close": "Tutup",
     "clear": "Hapus",
-    "type_something": "Ketik sesuatu..."
+    "type_something": "Ketik sesuatu...",
+    "datetime": "Tanggal dan Waktu",
+    "activity": "Aktivitas",
+    "status": "Status"
 }

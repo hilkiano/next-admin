@@ -6,6 +6,7 @@ use App\Models\Privilege;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\ActivityLogController;
 
 class PrivilegeController extends Controller
 {
@@ -49,7 +50,7 @@ class PrivilegeController extends Controller
             } else {
                 $total = Privilege::withTrashed()->count();
             }
-    
+
             $privilege = $privilege->offset(($page - 1) * $limit)
                 ->limit($limit)
                 ->orderBy($field, $sort);
@@ -80,6 +81,7 @@ class PrivilegeController extends Controller
     public function add(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required|unique:groups',
                 'description'   => 'required'
@@ -87,13 +89,15 @@ class PrivilegeController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-    
+            // Create new privilege
             $privilege = Privilege::create([
                 'name'          => $request->input('name'),
                 'description'   => $request->input('description')
             ]);
-    
+            // Return response
             if ($privilege) {
+                $activityLog = new ActivityLogController();
+                $activityLog->create(auth()->user()->id, config('constants.activity-log.add_privilege'), true);
                 return response()->json([
                     'success'   => true,
                     'privilege' => $privilege,
@@ -101,6 +105,8 @@ class PrivilegeController extends Controller
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.add_privilege'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -117,6 +123,7 @@ class PrivilegeController extends Controller
     public function update(Request $request)
     {
         try {
+            // Define form validation rules
             $validator = Validator::make($request->all(), [
                 'name'          => 'required',
                 'description'   => 'required',
@@ -124,18 +131,22 @@ class PrivilegeController extends Controller
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Find privilege by ID and update its information
             $privilege = Privilege::find($request->input('id'));
             $privilege->name = $request->input('name');
             $privilege->description = $request->input('description');
             $privilege->save();
-
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_privilege'), true);
             return response()->json([
                 'success'   => $privilege,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_privilege'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -152,13 +163,19 @@ class PrivilegeController extends Controller
     public function delete(Request $request)
     {
         try {
+            // Delete privilege by ID
             $privilege = Privilege::find($request->input('id'))->delete();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_privilege'), true);
             return response()->json([
                 'success'   => $privilege,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_privilege'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -175,13 +192,19 @@ class PrivilegeController extends Controller
     public function restore(Request $request)
     {
         try {
+            // Restore privilege by ID
             $privilege = Privilege::withTrashed()->find($request->input('id'))->restore();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_privilege'), true);
             return response()->json([
                 'success'   => $privilege,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_privilege'), true);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'

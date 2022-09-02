@@ -32,8 +32,11 @@ class NestedList extends React.Component {
             const open = this.state[name] || false;
             if (!is_parent) {
               return (
-                <div key={name}>
-                  <Link href={url}>
+                <div
+                  key={name}
+                  className={activeLink === name ? "disabled-link" : undefined}
+                >
+                  <Link href={url} passHref>
                     <ListItemButton
                       onClick={() => this.showLoading(message)}
                       selected={activeLink === name}
@@ -69,25 +72,34 @@ class NestedList extends React.Component {
                           icon: childIcon,
                           url: childUrl,
                         }) => (
-                          <Link key={childName} href={childUrl}>
-                            <ListItemButton
-                              onClick={() => this.showLoading(message)}
-                              selected={activeLink === childName}
-                            >
-                              <ListItemIcon sx={{ ml: "1em" }}>
-                                <Icon
-                                  color={
-                                    activeLink === childName
-                                      ? "primary"
-                                      : "inherit"
-                                  }
-                                >
-                                  {childIcon}
-                                </Icon>
-                              </ListItemIcon>
-                              <ListItemText primary={childLabel} />
-                            </ListItemButton>
-                          </Link>
+                          <div
+                            key={childName}
+                            className={
+                              activeLink === childName
+                                ? "disabled-link"
+                                : undefined
+                            }
+                          >
+                            <Link href={childUrl} passHref>
+                              <ListItemButton
+                                onClick={() => this.showLoading(message)}
+                                selected={activeLink === childName}
+                              >
+                                <ListItemIcon sx={{ ml: "1em" }}>
+                                  <Icon
+                                    color={
+                                      activeLink === childName
+                                        ? "primary"
+                                        : "inherit"
+                                    }
+                                  >
+                                    {childIcon}
+                                  </Icon>
+                                </ListItemIcon>
+                                <ListItemText primary={childLabel} />
+                              </ListItemButton>
+                            </Link>
+                          </div>
                         )
                       )}
                     </List>

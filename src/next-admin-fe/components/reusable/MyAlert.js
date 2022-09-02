@@ -4,6 +4,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Snackbar from "@mui/material/Snackbar";
 import parse from "html-react-parser";
+import Router from "next/router";
 
 export const useMyAlertStore = create((set) => ({
   vertical: "top",
@@ -58,7 +59,7 @@ export const errorHandling = (
         }
       }
     } else {
-      message = resp.data.message;
+      message = resp.data.message ? resp.data.message : resp.data.error;
     }
     myAlert(
       true,
@@ -86,7 +87,7 @@ export const MyAlert = () => {
   return (
     <Snackbar
       anchorOrigin={{ vertical, horizontal }}
-      open={(open) ? open : false}
+      open={open ? open : false}
       autoHideDuration={duration}
       onClose={handleClose}
       key={vertical + horizontal}

@@ -2,8 +2,10 @@
     "homepage": "Home Page",
     "welcome": "Welcome",
     "button": {
-        "info": "Update Your Information",
+        "info": "Click to update your profile",
         "choose_image": "Choose Image"
     },
-    "updated_info": "Your info has been updated"
+    "updated_info": "Your info has been updated",
+    "last_user_activity": "Recent activity",
+    "profile": "Profile"
 }

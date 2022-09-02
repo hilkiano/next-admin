@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { UserPage } from "../../components/page/UserPage";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
-
+import { UserContext } from "../../components/context/UserContext";
 import {
   MyBackdrop,
   myBackdrop,
@@ -12,6 +12,7 @@ import {
 } from "../../components/reusable/MyBackdrop";
 
 export default function User(props) {
+  const { user, setUser } = useContext(UserContext);
   const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -31,19 +32,13 @@ export default function User(props) {
     const lang = props.configs.find((a) => a.name === "app.language").value;
     router.push(router.route, router.asPath, { locale: lang });
     useMyBackdropStore.setState((state) => (state.open = false));
+    setUser(props.user);
     setLoading(false);
   }, []);
 
   if (!loading) {
     const title = `${t("administration")} - ${t("user")}`;
-    return (
-      <AdminLayout
-        name="user"
-        title={title}
-        content={<UserPage user={props.user} />}
-        user={props.user}
-      />
-    );
+    return <AdminLayout name="user" title={title} content={<UserPage />} />;
   } else {
     return <MyBackdrop />;
   }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
 class MenuSeeder extends Seeder
 {
@@ -17,67 +18,75 @@ class MenuSeeder extends Seeder
         DB::table('menus')->insert([
             [
                 'name'  => 'home',
-                'label' => 'Home',
+                'order' => 1,
                 'is_parent' => false,
                 'icon'  => 'home',
                 'parent'    => null,
-                'url'   => '/'
+                'url'   => '/',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'administrator',
-                'label' => 'Administrator',
+                'order' => 99,
                 'is_parent' => true,
                 'icon'  => 'admin_panel_settings',
                 'parent'    => null,
-                'url'   => null
+                'url'   => null,
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'user',
-                'label' => 'User',
+                'order' => 1,
                 'is_parent' => false,
                 'icon'  => 'person',
                 'parent'    => 'administrator',
-                'url'   => '/admin/user'
+                'url'   => '/admin/user',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'menu',
-                'label' => 'Menu',
+                'order' => 2,
                 'is_parent' => false,
                 'icon'  => 'menu_book',
                 'parent'    => 'administrator',
-                'url'   => '/admin/menu'
+                'url'   => '/admin/menu',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'group',
-                'label' => 'Group',
+                'order' => 3,
                 'is_parent' => false,
                 'icon'  => 'group',
                 'parent'    => 'administrator',
-                'url'   => '/admin/group'
+                'url'   => '/admin/group',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'role',
-                'label' => 'Role',
+                'order' => 4,
                 'is_parent' => false,
                 'icon'  => 'local_police',
                 'parent'    => 'administrator',
-                'url'   => '/admin/role'
+                'url'   => '/admin/role',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'privilege',
-                'label' => 'Privilege',
+                'order' => 5,
                 'is_parent' => false,
                 'icon'  => 'star',
                 'parent'    => 'administrator',
-                'url'   => '/admin/privilege'
+                'url'   => '/admin/privilege',
+                'created_at' => Carbon::now()
             ],
             [
                 'name'  => 'configuration',
-                'label' => 'Configuration',
+                'order' => 6,
                 'is_parent' => false,
                 'icon'  => 'settings',
                 'parent'    => 'administrator',
-                'url'   => '/admin/configuration'
+                'url'   => '/admin/configuration',
+                'created_at' => Carbon::now()
             ],
         ]);
     }

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import AdminLayout from "../components/layout/AdminLayout";
 import { HomePage } from "../components/page/HomePage";
+import { UserContext } from "../components/context/UserContext";
 import {
   MyBackdrop,
   myBackdrop,
@@ -11,6 +12,7 @@ import {
 } from "../components/reusable/MyBackdrop";
 
 export default function Index(props) {
+  const { user, setUser } = useContext(UserContext);
   const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -30,6 +32,7 @@ export default function Index(props) {
     const lang = props.configs.find((a) => a.name === "app.language").value;
     router.push(router.route, router.asPath, { locale: lang });
     useMyBackdropStore.setState((state) => (state.open = false));
+    setUser(props.user);
     setLoading(false);
   }, []);
 
@@ -38,8 +41,7 @@ export default function Index(props) {
       <AdminLayout
         name="home"
         title={t("homepage", { ns: "home" })}
-        content={<HomePage user={props.user} />}
-        user={props.user}
+        content={<HomePage />}
       />
     );
   } else {
@@ -69,7 +71,12 @@ export async function getServerSideProps(ctx) {
     props: {
       configs: responses[0].data,
       user: responses[1] ? responses[1] : null,
-      ...(await serverSideTranslations(ctx.locale, ["common", "home"])),
+      ...(await serverSideTranslations(ctx.locale, [
+        "common",
+        "home",
+        "grid",
+        "log",
+      ])),
     },
   };
 }

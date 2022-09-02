@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { PrivilegePage } from "../../components/page/PrivilegePage";
 import AdminLayout from "../../components/layout/AdminLayout";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
-
+import { UserContext } from "../../components/context/UserContext";
 import {
   MyBackdrop,
   myBackdrop,
@@ -15,7 +15,7 @@ export default function Privilege(props) {
   const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-
+  const { user, setUser } = useContext(UserContext);
   useEffect(() => {
     myBackdrop(
       loading,
@@ -31,6 +31,7 @@ export default function Privilege(props) {
     const lang = props.configs.find((a) => a.name === "app.language").value;
     router.push(router.route, router.asPath, { locale: lang });
     useMyBackdropStore.setState((state) => (state.open = false));
+    setUser(props.user);
     setLoading(false);
   }, []);
 

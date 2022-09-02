@@ -7,7 +7,8 @@
             "content": "No response from server"
         },
         "422": "Unprocessable content",
-        "401": "Unauthorized"
+        "401": "Unauthorized",
+        "405": "Method not allowed"
     },
     "button": {
         "ok": "okay",
@@ -46,5 +47,8 @@
     "open": "Open",
     "close": "Close",
     "clear": "Clear",
-    "type_something": "Type something..."
+    "type_something": "Type something...",
+    "datetime": "Datetime",
+    "activity": "Activity",
+    "status": "Status"
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
@@ -22,6 +22,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
+import { UserContext } from "../context/UserContext";
 
 import { roleService } from "../../services/roleService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -39,6 +40,14 @@ export const RolePage = () => {
   const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
+  const { user, setUser } = useContext(UserContext);
+  // Privilege
+  const canAddRole = user.privileges.some((a) => a.name === "ACT_ADD_ROLE");
+  const canEditRole = user.privileges.some((a) => a.name === "ACT_EDIT_ROLE");
+  const canDelResRole = user.privileges.some(
+    (a) => a.name === "ACT_DELETE_RESTORE_ROLE"
+  );
+  // End of privilege
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -337,7 +346,7 @@ export const RolePage = () => {
           },
         }}
       >
-        <MenuItem onClick={editRow}>
+        <MenuItem onClick={editRow} disabled={!canEditRole}>
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
@@ -346,7 +355,7 @@ export const RolePage = () => {
               t("button.edit").slice(1)}
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={deleteRestoreRow}>
+        <MenuItem onClick={deleteRestoreRow} disabled={!canDelResRole}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -640,6 +649,7 @@ export const RolePage = () => {
         </Grid>
         <Grid item>
           <Button
+            disabled={!canAddRole}
             onClick={() => {
               myDialog(
                 true,

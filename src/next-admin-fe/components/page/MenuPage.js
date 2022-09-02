@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
@@ -24,6 +24,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import Chip from "@mui/material/Chip";
 import { useTranslation } from "next-i18next";
+import { UserContext } from "../context/UserContext";
 
 import { menuService } from "../../services/menuService";
 import { myAlert, errorHandling } from "../reusable/MyAlert";
@@ -39,14 +40,22 @@ export const MenuPage = () => {
   const { t } = useTranslation();
   const [selectedRow, setSelectedRow] = useState();
   const [contextMenu, setContextMenu] = useState(null);
+  const { user, setUser } = useContext(UserContext);
+  // Privilege
+  const canAddMenu = user.privileges.some((a) => a.name === "ACT_ADD_MENU");
+  const canEditMenu = user.privileges.some((a) => a.name === "ACT_EDIT_MENU");
+  const canDelResMenu = user.privileges.some(
+    (a) => a.name === "ACT_DELETE_RESTORE_MENU"
+  );
+  // End of privilege
   const theme = useTheme();
   const matchesMd = useMediaQuery(theme.breakpoints.down("md"));
   const matchesSm = useMediaQuery(theme.breakpoints.down("sm"));
   const {
     name,
     setName,
-    label,
-    setLabel,
+    order,
+    setOrder,
     isParent,
     setIsParent,
     url,
@@ -141,9 +150,9 @@ export const MenuPage = () => {
       ),
     },
     {
-      field: "label",
-      headerName: t("label", { ns: "menu" }),
-      width: 200,
+      field: "order",
+      headerName: t("order", { ns: "menu" }),
+      width: 100,
       filterOperators: getGridStringOperators().filter(
         (operator) =>
           operator.value === "contains" ||
@@ -151,6 +160,9 @@ export const MenuPage = () => {
           operator.value === "startsWith" ||
           operator.value === "endsWith"
       ),
+      type: "number",
+      align: "center",
+      headerAlign: "center",
     },
     {
       field: "is_parent",
@@ -188,6 +200,7 @@ export const MenuPage = () => {
         return <Icon>{v.row.icon}</Icon>;
       },
       align: "center",
+      headerAlign: "center",
       filterable: false,
       sortable: false,
     },
@@ -358,7 +371,7 @@ export const MenuPage = () => {
           },
         }}
       >
-        <MenuItem onClick={editRow}>
+        <MenuItem onClick={editRow} disabled={!canEditMenu}>
           <ListItemIcon>
             <UpdateIcon fontSize="small" />
           </ListItemIcon>
@@ -367,7 +380,7 @@ export const MenuPage = () => {
               t("button.edit").slice(1)}
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={deleteRestoreRow}>
+        <MenuItem onClick={deleteRestoreRow} disabled={!canDelResMenu}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -403,7 +416,7 @@ export const MenuPage = () => {
     pageState.data.map((row) => {
       if (row.id === selectedRow) {
         setName(row.name);
-        setLabel(row.label);
+        setOrder(row.order);
         setIcon(row.icon);
         setIsParent(row.is_parent ? true : false);
         row.parent ? setParent(row.parent) : null;
@@ -436,11 +449,12 @@ export const MenuPage = () => {
         myDialog(
           true,
           "confirm",
-          `${mode === "delete"
-            ? t("button.delete").charAt(0).toUpperCase() +
-            t("button.delete").slice(1)
-            : t("button.restore").charAt(0).toUpperCase() +
-            t("button.restore").slice(1)
+          `${
+            mode === "delete"
+              ? t("button.delete").charAt(0).toUpperCase() +
+                t("button.delete").slice(1)
+              : t("button.restore").charAt(0).toUpperCase() +
+                t("button.restore").slice(1)
           } ${t("menu", { ns: "menu" })}`,
           `${t("delete_restore_message", {
             action:
@@ -466,7 +480,7 @@ export const MenuPage = () => {
 
   const clearDialogState = () => {
     setName("");
-    setLabel("");
+    setOrder("");
     setUrl("");
     setIsParent(false);
     setIcon("");
@@ -478,7 +492,7 @@ export const MenuPage = () => {
     setLoading(true);
     const param = {
       name: useMenuDialogStore.getState().name,
-      label: useMenuDialogStore.getState().label,
+      order: useMenuDialogStore.getState().order,
       is_parent: useMenuDialogStore.getState().isParent,
       url: useMenuDialogStore.getState().url,
       icon: useMenuDialogStore.getState().icon,
@@ -515,7 +529,7 @@ export const MenuPage = () => {
     const param = {
       id: useMenuDialogStore.getState().rowEdit.id,
       name: useMenuDialogStore.getState().name,
-      label: useMenuDialogStore.getState().label,
+      order: useMenuDialogStore.getState().order,
       is_parent: useMenuDialogStore.getState().isParent,
       url: useMenuDialogStore.getState().url,
       icon: useMenuDialogStore.getState().icon,
@@ -651,6 +665,7 @@ export const MenuPage = () => {
         </Grid>
         <Grid item>
           <Button
+            disabled={!canAddMenu}
             onClick={() =>
               myDialog(
                 true,

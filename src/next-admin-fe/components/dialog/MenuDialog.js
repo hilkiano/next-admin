@@ -14,8 +14,8 @@ import { useTranslation } from "next-i18next";
 export const useMenuDialogStore = create((set) => ({
   name: "",
   setName: (newName) => set({ name: newName }),
-  label: "",
-  setLabel: (newLabel) => set({ label: newLabel }),
+  order: "",
+  setOrder: (newOrder) => set({ order: newOrder }),
   isParent: false,
   setIsParent: (newIsParent) => set({ isParent: newIsParent }),
   url: "",
@@ -39,8 +39,8 @@ export const MenuDialog = ({ type }) => {
   const {
     name,
     setName,
-    label,
-    setLabel,
+    order,
+    setOrder,
     isParent,
     setIsParent,
     url,
@@ -76,14 +76,14 @@ export const MenuDialog = ({ type }) => {
         <Grid item xs={2} sm={4} md={6}>
           <TextField
             sx={{ mt: 0, mb: 0, flex: 1 }}
-            id="label"
-            label={t("label", { ns: "menu" })}
+            id="order"
+            label={t("order", { ns: "menu" })}
             variant="outlined"
             margin="normal"
             fullWidth
             required
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={12}>

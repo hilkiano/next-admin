@@ -2,9 +2,15 @@
     "administration": "Administration",
     "configs": "Configurations",
     "language": "Language",
-    "language_desc": "Set the default language for application.",
+    "language_desc": "Set default language for application.",
+    "theme": "Theme",
+    "theme_desc": "Set default application theme.",
+    "timezone": "Timezone",
+    "timezone_desc": "Set default application timezone.",
     "english_main": "English",
     "english_sec": "English",
     "indo_main": "Indonesia",
-    "indo_sec": "Indonesian"
+    "indo_sec": "Indonesian",
+    "light": "Light mode",
+    "dark": "Dark mode"
 }

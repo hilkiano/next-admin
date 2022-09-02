@@ -5,7 +5,7 @@
     "add_menu": "Tambah Menu",
     "id": "ID",
     "name": "Nama",
-    "label": "Label",
+    "order": "Urutan",
     "parent_menu": "Induk Menu?",
     "parent": "Induk",
     "icon": "Ikon",

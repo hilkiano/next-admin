@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             GroupUserSeeder::class,
             RolePrivilegeSeeder::class,
             ConfigSeeder::class,
+            TimezoneSeeder::class
         ]);
     }
 }

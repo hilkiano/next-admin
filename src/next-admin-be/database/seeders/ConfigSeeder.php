@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
 class ConfigSeeder extends Seeder
 {
@@ -19,7 +20,22 @@ class ConfigSeeder extends Seeder
                 'name'  => 'app.language',
                 'value' => 'en',
                 'type'  => 'string',
-                'description' => 'Application default language'
+                'description' => 'Application default language',
+                'created_at' => Carbon::now()
+            ],
+            [
+                'name'  => 'app.theme',
+                'value' => 'light',
+                'type'  => 'string',
+                'description' => 'Application default theme',
+                'created_at' => Carbon::now()
+            ],
+            [
+                'name'  => 'app.tz',
+                'value' => 'Asia/Jakarta',
+                'type'  => 'string',
+                'description' => 'Application default timezone',
+                'created_at' => Carbon::now()
             ]
         ]);
     }

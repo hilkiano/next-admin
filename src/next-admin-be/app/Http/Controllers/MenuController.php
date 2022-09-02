@@ -6,6 +6,7 @@ use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\ActivityLogController;
 
 class MenuController extends Controller
 {
@@ -83,17 +84,19 @@ class MenuController extends Controller
 
     public function add(Request $request)
     {
+        // Define form validation rules
         $validator = Validator::make($request->all(), [
             'name'      => 'required|unique:menus',
-            'label'     => 'required',
+            'order'     => 'required',
             'icon'      => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
+        // Create new menu
         $createArr = [
             'name'      => $request->name,
-            'label'     => $request->label,
+            'order'     => $request->order,
             'is_parent' => $request->is_parent,
             'icon'      => $request->icon,
             'url'       => $request->url
@@ -104,12 +107,17 @@ class MenuController extends Controller
 
         $menu = Menu::create($createArr);
         if ($menu) {
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.add_menu'), true);
             return response()->json([
                 'success' => true,
                 'menu'    => $menu,
             ], 201);
         }
-
+        // Return response
+        $activityLog = new ActivityLogController();
+        $activityLog->create(auth()->user()->id, config('constants.activity-log.add_menu'), false);
         return response()->json([
             'success' => false,
         ], 409);
@@ -124,18 +132,19 @@ class MenuController extends Controller
     public function update(Request $request)
     {
         try {
+            // Define form validation rules
             $rules = [];
             $rules['name'] = 'required';
-            $rules['label'] = 'required';
+            $rules['order'] = 'required';
             $rules['icon'] = 'required';
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
-
+            // Find menu by ID and update its information
             $menu = Menu::find($request->input('id'));
             $menu->name = $request->input('name');
-            $menu->label = $request->input('label');
+            $menu->order = $request->input('order');
             if ($request->has('is_parent')) {
                 $menu->is_parent = $request->input('is_parent');
             }
@@ -147,13 +156,17 @@ class MenuController extends Controller
                 $menu->url = $request->input('url');
             }
             $menu->save();
-
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_menu'), true);
             return response()->json([
                 'success'   => $menu,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.update_menu'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -170,13 +183,19 @@ class MenuController extends Controller
     public function delete(Request $request)
     {
         try {
+            // Delete menu by ID
             $menu = Menu::find($request->input('id'))->delete();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_menu'), true);
             return response()->json([
                 'success'   => $menu,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.delete_menu'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -193,13 +212,19 @@ class MenuController extends Controller
     public function restore(Request $request)
     {
         try {
+            // Restore menu by ID
             $menu = Menu::withTrashed()->find($request->input('id'))->restore();
+            // Return response
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_menu'), true);
             return response()->json([
                 'success'   => $menu,
                 'message'   => ''
             ], 200);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            $activityLog = new ActivityLogController();
+            $activityLog->create(auth()->user()->id, config('constants.activity-log.restore_menu'), false);
             return response()->json([
                 'success'   => false,
                 'message'   => 'Something wrong happened. Try again later.'
@@ -208,7 +233,7 @@ class MenuController extends Controller
     }
 
     /**
-     * generateMenu
+     * Generate list of menu based on user's privileges
      *
      * @param  mixed $privileges
      * @return void
@@ -218,6 +243,7 @@ class MenuController extends Controller
         try {
             $menus = [];
             $allMenu = Menu::all();
+            // Filter user privileges with name contains PAGE
             $pagePrivs = array_filter($privileges, function ($obj) {
                 if (isset($obj->name)) {
                     if (str_contains('PAGE_', $obj->name)) return false;
@@ -260,6 +286,7 @@ class MenuController extends Controller
                 array_push($org, (object)[
                     "name"      => $menu->name,
                     "label"     => trans("menu.{$menu->name}"),
+                    "order"     => $menu->order,
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon,
@@ -269,6 +296,7 @@ class MenuController extends Controller
                 array_push($org, (object)[
                     "name"      => $menu->name,
                     "label"     => trans("menu.{$menu->name}"),
+                    "order"     => $menu->order,
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon
@@ -276,7 +304,8 @@ class MenuController extends Controller
             }
         }
 
-        return $org;
+        $sorted = collect($org)->sortBy('order')->toArray();
+        return $sorted;
     }
 
     private function childMenu($menus, $parentName)
@@ -287,6 +316,7 @@ class MenuController extends Controller
                 array_push($children, (object)[
                     "name"      => $menu->name,
                     "label"     => trans("menu.{$menu->name}"),
+                    "order"     => $menu->order,
                     "is_parent" => $menu->is_parent,
                     "url"       => $menu->url,
                     "icon"      => $menu->icon,
@@ -294,6 +324,7 @@ class MenuController extends Controller
             }
         }
 
-        return $children;
+        $sorted = collect($children)->sortBy('order')->toArray();
+        return $sorted;
     }
 }
